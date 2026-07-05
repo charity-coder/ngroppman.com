@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>NGROPPMAN — National Groundnuts Association of Nigeria</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --g:#1a6b3a;--gd:#124d2b;--gl:#e8f5ee;--au:#C8860A;--al:#F5C96B;
+      --ink:#1A1208;--earth:#3D2B0A;--parch:#EFE4C6;--dust:#D9C9A0;
+      --gr:#4a4a4a;--grl:#6b6b6b;
+    }
+    html{scroll-behavior:smooth}
+    body{background:#fff;color:var(--ink);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden}
+
+    /* ── TICKER ── */
+    .ticker-wrap{background:#0a2d18;padding:7px 0;overflow:hidden;border-bottom:2px solid var(--au);position:relative;z-index:10}
+    .ticker-wrap::before,.ticker-wrap::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:2}
+    .ticker-wrap::before{left:0;background:linear-gradient(to right,#0a2d18,transparent)}
+    .ticker-wrap::after{right:0;background:linear-gradient(to left,#0a2d18,transparent)}
+    .ticker-label{position:absolute;left:0;top:0;bottom:0;background:var(--au);color:var(--ink);font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:0 12px;display:flex;align-items:center;z-index:3;white-space:nowrap}
+    .ticker-track{display:flex;animation:ticker 42s linear infinite;width:max-content;padding-left:120px}
+    .ticker-track:hover{animation-play-state:paused}
+    .ticker-item{color:rgba(255,255,255,.9);font-size:11px;font-weight:500;padding:0 28px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+    .ticker-item::before{content:'🌾';font-size:12px}
+    .ticker-sep{color:var(--au);font-size:16px;opacity:.6}
+    @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+    /* ── SOCIAL BAR ── */
+    .soc{background:var(--g);padding:6px 0;display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
+    .soc a{color:rgba(255,255,255,.85);text-decoration:none;display:flex;align-items:center;transition:color .2s,transform .2s}
+    .soc a:hover{color:#fff;transform:translateY(-2px)}
+    .soc svg{width:16px;height:16px;fill:currentColor}
+
+    /* ── BRAND ── */
+    .brand{background:#fff;padding:10px 8px 8px;border-bottom:1px solid #e0e0e0}
+    .brand-inner{display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center;padding:4px;gap:10px;flex-wrap:wrap}
+    .logos-pair{display:flex;align-items:center;gap:12px}
+    .logo-img{height:auto;width:65px;object-fit:contain;border-radius:50%;animation:float3d 4s ease-in-out infinite;filter:drop-shadow(0 4px 16px rgba(26,107,58,.3));transform-style:preserve-3d}
+    #coatImg{animation-delay:0s}#ngropLogo{animation-delay:2s}
+    @keyframes float3d{0%{transform:perspective(700px) rotateY(0deg) rotateX(0deg) translateY(0) scale(1)}25%{transform:perspective(700px) rotateY(10deg) rotateX(4deg) translateY(-6px) scale(1.04)}50%{transform:perspective(700px) rotateY(0deg) rotateX(-3deg) translateY(-10px) scale(1.06)}75%{transform:perspective(700px) rotateY(-10deg) rotateX(4deg) translateY(-6px) scale(1.04)}100%{transform:perspective(700px) rotateY(0deg) rotateX(0deg) translateY(0) scale(1)}}
+    .logo-img:hover{animation:spin3d .8s ease forwards}
+    @keyframes spin3d{0%{transform:perspective(700px) rotateY(0deg) scale(1)}40%{transform:perspective(700px) rotateY(200deg) scale(1.12)}100%{transform:perspective(700px) rotateY(360deg) scale(1)}}
+    .brand-div{width:1px;height:50px;background:#ccc;flex-shrink:0}
+    .brand-txt{text-align:center;max-width:420px;padding:0 6px}
+    .brand-title{font-family:'DM Sans',sans-serif;font-weight:700;font-size:clamp(11px,1.5vw,18px);color:#b45113;line-height:1.2}
+    .brand-title span{color:#006400;font-weight:800}
+    .brand-tag{font-size:12px;color:#f4a261;font-style:italic;margin-top:2px}
+
+    /* ── NAV ── */
+    .nav-primary{background:var(--g);display:flex;align-items:center;position:relative}
+    .nav-inner{display:flex;justify-content:center;flex-wrap:wrap;flex:1;transition:max-height .3s ease}
+    .nav-primary a{color:#fff;font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;padding:13px 12px;transition:background .2s;white-space:nowrap}
+    .nav-primary a:hover{background:var(--gd)}
+    .hamburger{display:none;background:none;border:none;cursor:pointer;padding:13px 14px;flex-direction:column;gap:5px;z-index:10}
+    .hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:transform .3s,opacity .3s}
+    .open .hamburger span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .open .hamburger span:nth-child(2){opacity:0}
+    .open .hamburger span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+    .nav-secondary{background:#4a4a4a;display:flex;justify-content:center;flex-wrap:wrap}
+    .nav-secondary a{color:rgba(255,255,255,.82);font-size:11px;font-weight:400;text-decoration:none;padding:8px 12px;transition:background .2s,color .2s;white-space:nowrap}
+    .nav-secondary a:hover{background:#3a3a3a;color:#fff}
+    .breadcrumb{text-align:center;padding:5px;font-size:12px;color:var(--grl);border-bottom:1px solid #eee}
+    .nav-mobile-extra{display:none}
+    .nav-mobile-divider{display:none}
+
+    /* ── HERO ── */
+    .hero{position:relative;min-height:80vh;overflow:hidden;display:flex;align-items:center;background:#0f3d1f}
+    .hslide {position: absolute;inset: 0;width: 100%;height: 100%;background-size: cover;background-position: center center;background-repeat: no-repeat;  opacity: 0;transition: opacity 1s ease;}
+.hslide.active {opacity: 1;}
+@media (max-width: 768px) {
+  .hslide {background-attachment: scroll; /* override fixed on mobile */background-size: cover;background-position: center;}}
+    @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0%)}}
+    @keyframes slowZoom{from{background-size:100%}to{background-size:110%}}
+    .hslide::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:1}
+    .hero-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(18,77,43,.9) 0%,rgba(18,77,43,.55) 55%,rgba(0,0,0,.15) 100%);z-index:1}
+    .hero-layout{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;width:100%;min-height:80vh;align-items:center}
+    .hero-content{padding:clamp(32px,5vw,72px) clamp(20px,5vw,52px)}
+    .hero-eyebrow{font-size:clamp(12px,2.2vw,18px);letter-spacing:.08em;color:rgba(255,255,255,.65);font-weight:700;margin-bottom:12px;display:block}
+    .hero-headline{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(28px,4.5vw,56px);line-height:1.05;color:#fff;letter-spacing:-1px;margin-bottom:14px;animation:slideUp .8s cubic-bezier(.22,1,.36,1) both}
+    .hero-headline em{font-style:italic;color:var(--al);font-weight:300}
+    @keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+    .hero-body{color:rgba(255,255,255,.75);font-size:clamp(12px,1.4vw,14px);line-height:1.75;max-width:420px;margin-bottom:24px}
+    .hero-cta{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .btn-gold{background:var(--au);color:var(--ink);font-weight:700;font-size:13px;padding:12px 24px;border-radius:3px;border:none;cursor:pointer;text-decoration:none;transition:all .25s;display:inline-block;box-shadow:0 4px 18px rgba(200,134,10,.4),0 5px 0 #7a4e04}
+    .btn-gold:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(200,134,10,.5),0 8px 0 #7a4e04}
+    .btn-outline-w{color:rgba(255,255,255,.82);font-size:13px;font-weight:500;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.38);padding-bottom:1px;transition:color .2s}
+    .slide-dots{position:absolute;bottom:14px;left:clamp(20px,5vw,52px);display:flex;gap:8px;z-index:3}
+    .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:background .3s,transform .3s}
+    .dot.active{background:#fff;transform:scale(1.35)}
+
+    /* ── STATS ── */
+    .stats-band{background:#f8f9f8;padding:50px 20px}
+    .stats-inner{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;max-width:1200px;margin:0 auto}
+    .stat-tile{position:relative;height:300px;border-radius:12px;overflow:hidden;background-size:cover;background-position:center;box-shadow:0 8px 25px rgba(0,0,0,.12);transition:transform .3s}
+    .stat-tile:hover{transform:translateY(-6px)}
+    .stat-tile::before{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.2),rgba(0,0,0,.65));z-index:1}
+    .stat-content{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:20px 26px 26px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+    .stat-icon{font-size:38px;margin-bottom:10px}
+    .stat-num{font-size:2.6rem;font-weight:800;line-height:1;margin-bottom:6px}
+    .stat-lbl{font-size:1.05rem;font-weight:600;margin-bottom:4px}
+    .stat-sub{font-size:.9rem;opacity:.9}
+
+    /* ── ABOUT ── */
+    .about-band{background:var(--gl);padding:clamp(40px,6vw,72px) clamp(16px,4vw,44px)}
+    .about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+    .about-text p{font-size:14px;color:var(--grl);line-height:1.75;margin-top:12px}
+    .objectives-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+    .obj-item{background:#fff;border-radius:6px;padding:12px 14px;border-left:3px solid var(--g);font-size:12px;color:var(--ink);line-height:1.5;box-shadow:0 2px 8px rgba(26,107,58,.08);transition:transform .2s,box-shadow .2s}
+    .obj-item:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(26,107,58,.14)}
+    .obj-num{font-family:'Fraunces',serif;font-weight:900;font-size:18px;color:var(--g);display:block;margin-bottom:3px}
+    .vision-mission{display:flex;flex-direction:column;gap:18px}
+    .vm-card{background:#fff;border-radius:8px;padding:22px;border-top:4px solid var(--au);box-shadow:0 4px 20px rgba(61,43,10,.08);transition:transform .35s,box-shadow .35s}
+    .vm-card:hover{transform:perspective(600px) rotateY(-5deg) translateY(-4px);box-shadow:0 12px 36px rgba(61,43,10,.14)}
+    .vm-icon{font-size:26px;margin-bottom:8px}
+    .vm-title{font-family:'Fraunces',serif;font-weight:700;font-size:17px;color:var(--earth);margin-bottom:6px}
+    .vm-body{font-size:13px;color:var(--grl);line-height:1.65}
+    .membership-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+    .ms-card{background:var(--g);border-radius:6px;padding:14px 10px;text-align:center;transition:transform .3s}
+    .ms-card:hover{transform:translateY(-3px)}
+    .ms-num{font-family:'Fraunces',serif;font-weight:900;font-size:20px;color:#fff}
+    .ms-lbl{font-size:10px;color:rgba(255,255,255,.7);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+
+    /* ── MISSION PILLARS ── */
+    .mission-band{background:linear-gradient(180deg,var(--gd) 0%,#0a2d18 100%);padding:0}
+    .mission-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+    .pillar{position:relative;overflow:hidden;cursor:default;transform-style:preserve-3d;transition:transform .4s}
+    .pillar:hover{transform:perspective(800px) rotateY(-6deg) rotateX(3deg) translateY(-6px)}
+    .pillar-canvas{width:100%;height:280px;display:block}
+    .pillar-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,45,24,.98) 0%,rgba(10,45,24,.75) 50%,rgba(0,0,0,.2) 100%)}
+    .pillar-content{position:absolute;bottom:0;left:0;right:0;padding:clamp(16px,2.5vw,28px)}
+    .pillar-num{font-family:'Fraunces',serif;font-size:34px;font-weight:300;font-style:italic;color:var(--al);opacity:.45;line-height:1;margin-bottom:6px}
+    .pillar-title{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:5px}
+    .pillar-body{font-size:12px;color:rgba(255,255,255,.62);line-height:1.6}
+
+    /* ── SDP ── */
+    .sdp-band{background:#fff;padding:clamp(40px,6vw,72px) clamp(16px,4vw,44px)}
+    .sdp-inner{max-width:1100px;margin:0 auto}
+    .sdp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+    .sdp-card{background:var(--parch);border-radius:8px;padding:20px 18px;border-top:3px solid var(--g);transition:transform .35s,box-shadow .35s}
+    .sdp-card:hover{transform:perspective(600px) rotateX(-4deg) rotateY(4deg) translateY(-5px);box-shadow:0 16px 40px rgba(26,107,58,.15)}
+    .sdp-goal{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--au);font-weight:700;margin-bottom:5px}
+    .sdp-title{font-family:'Fraunces',serif;font-weight:700;font-size:14px;color:var(--earth);margin-bottom:6px}
+    .sdp-target{font-size:12px;color:var(--grl);line-height:1.55}
+    .sdp-target strong{color:var(--g);display:block;margin-top:5px;font-size:11px}
+
+    /* ── TIMELINE ── */
+    .timeline-band{background:var(--gd);padding:clamp(36px,5vw,60px) clamp(16px,4vw,44px)}
+    .timeline-inner{max-width:880px;margin:0 auto}
+    .timeline{position:relative;margin-top:32px;padding-left:22px}
+    .timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--au),rgba(200,134,10,.2))}
+    .tl-item{position:relative;padding:0 0 28px 26px}
+    .tl-item.year-2026 .tl-dot{background:#14b8a6}.tl-item.year-2027 .tl-dot{background:#3b82f6}
+    .tl-item.year-2028 .tl-dot{background:#8b5cf6}.tl-item.year-2029 .tl-dot{background:#f59e0b}
+    .tl-item.year-2030 .tl-dot{background:#10b981}
+    .tl-item.year-2026 .tl-year{color:#14b8a6}.tl-item.year-2027 .tl-year{color:#3b82f6}
+    .tl-item.year-2028 .tl-year{color:#8b5cf6}.tl-item.year-2029 .tl-year{color:#f59e0b}
+    .tl-item.year-2030 .tl-year{color:#10b981}
+    .tl-dot{position:absolute;left:-7px;top:4px;width:15px;height:15px;border-radius:50%;background:var(--au);border:2px solid var(--gd);box-shadow:0 0 0 4px rgba(200,134,10,.2);transition:transform .3s}
+    .tl-item:hover .tl-dot{transform:scale(1.4)}
+    .tl-year{font-family:'Fraunces',serif;font-weight:700;font-size:17px;color:var(--al);margin-bottom:5px}
+    .tl-card{background:rgba(255,255,255,.06);border-radius:6px;padding:12px 16px;border:1px solid rgba(255,255,255,.1);transition:background .3s}
+    .tl-item:hover .tl-card{background:rgba(255,255,255,.1)}
+    .tl-card ul{list-style:none;display:flex;flex-wrap:wrap;font-size:13px;gap:6px}
+    .tl-card ul li{background:rgba(200,134,10,.15);color:rgba(255,255,255,.85);padding:4px 10px;border-radius:20px;border:1px solid rgba(200,134,10,.3)}
+
+    /* ── NGRP ── */
+    .ngrp-band{background:linear-gradient(135deg,#0a2d18 0%,var(--g) 60%,#1a5c1a 100%);padding:clamp(40px,6vw,72px) clamp(16px,4vw,44px)}
+    .ngrp-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}
+    .ngrp-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(200,134,10,.2);border:1px solid var(--au);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--al);margin-bottom:14px}
+    .ngrp-headline{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(22px,3vw,36px);color:#fff;line-height:1.1;margin-bottom:12px}
+    .ngrp-body{font-size:13px;color:rgba(255,255,255,.72);line-height:1.75;margin-bottom:18px}
+    .ngrp-theme{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:var(--al);border-left:3px solid var(--au);padding-left:12px;margin-bottom:20px}
+    .ngrp-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .ngrp-meta-card{background:rgba(255,255,255,.08);border-radius:6px;padding:12px 14px;border:1px solid rgba(255,255,255,.12)}
+    .ngrp-meta-lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--al);font-weight:700;margin-bottom:3px}
+    .ngrp-meta-val{font-size:13px;color:#fff;font-weight:600}
+    .ngrp-activities{display:flex;flex-direction:column;gap:10px}
+    .ngrp-act{background:rgba(255,255,255,.07);border-radius:8px;padding:14px 16px;border-left:3px solid var(--au);transition:background .2s,transform .3s}
+    .ngrp-act:hover{background:rgba(255,255,255,.12);transform:translateX(4px)}
+    .ngrp-act-title{font-family:'Fraunces',serif;font-weight:700;font-size:14px;color:#fff;margin-bottom:3px}
+    .ngrp-act-body{font-size:12px;color:rgba(255,255,255,.6);line-height:1.5}
+
+    /* ── AFLATOXIN ── */
+    .afla-band{background:#fff;padding:clamp(40px,6vw,72px) clamp(16px,4vw,44px)}
+    .afla-inner{max-width:1100px;margin:0 auto}
+    .afla-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:30px;align-items:start}
+    .afla-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+    .afla-stat{background:var(--g);border-radius:8px;padding:18px 12px;text-align:center;transition:transform .3s}
+    .afla-stat:hover{transform:perspective(400px) rotateY(8deg) translateY(-4px)}
+    .afla-stat-num{font-family:'Fraunces',serif;font-weight:900;font-size:24px;color:#fff}
+    .afla-stat-lbl{font-size:10px;color:rgba(255,255,255,.7);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+    .afla-activities{display:flex;flex-direction:column;gap:10px}
+    .afla-act{display:flex;gap:10px;padding:12px 14px;background:var(--gl);border-radius:6px;transition:transform .2s,box-shadow .2s}
+    .afla-act:hover{transform:translateX(4px);box-shadow:0 4px 16px rgba(26,107,58,.1)}
+    .afla-act-icon{font-size:20px;flex-shrink:0;margin-top:2px}
+    .afla-act-title{font-weight:600;font-size:13px;color:var(--earth);margin-bottom:2px}
+    .afla-act-body{font-size:12px;color:var(--grl);line-height:1.5}
+    .states-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+    .state-tag{background:var(--gl);border:1px solid #c0dbc8;color:var(--g);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px}
+
+    /* ── CLUSTER ── */
+    .cluster-band{background:var(--parch);padding:clamp(40px,6vw,72px) clamp(16px,4vw,44px)}
+    .cluster-inner{max-width:1100px;margin:0 auto}
+    .cluster-structure{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--dust);border:1px solid var(--dust);border-radius:8px;overflow:hidden;margin-top:28px}
+    .cluster-level{background:#fff;padding:20px 14px;text-align:center;transition:background .2s,transform .3s;cursor:default}
+    .cluster-level:hover{background:var(--gl);transform:translateY(-4px)}
+    .cl-icon{font-size:26px;margin-bottom:8px}
+    .cl-title{font-family:'Fraunces',serif;font-weight:700;font-size:13px;color:var(--earth);margin-bottom:6px}
+    .cl-items{font-size:11px;color:var(--grl);line-height:1.6}
+    .cluster-principle{background:var(--g);border-radius:8px;padding:24px 28px;margin-top:28px;text-align:center}
+    .cp-text{font-family:'Fraunces',serif;font-style:italic;font-size:clamp(13px,1.8vw,17px);color:#fff;line-height:1.55}
+    .cp-text em{color:var(--al)}
+
+    /* ── LEADERSHIP ── */
+    .section{padding:clamp(40px,6vw,72px) clamp(16px,4vw,44px)}
+    .section-inner{max-width:1100px;margin:0 auto}
+    .section-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--au);font-weight:700;margin-bottom:10px;display:block}
+    .section-title{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(22px,3vw,38px);color:var(--earth);letter-spacing:-.5px;line-height:1.1}
+    .all-leaders{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:30px}
+    .leader-card{background:#fff;padding:24px 16px 18px;border-radius:12px;text-align:center;transition:transform .35s,box-shadow .35s;cursor:default;border:1px solid #f0ead8;box-shadow:0 4px 16px rgba(61,43,10,.07)}
+    .leader-card:hover{background:var(--gl);transform:perspective(500px) rotateY(-6deg) translateY(-6px);box-shadow:0 16px 40px rgba(26,107,58,.15)}
+    .leader-photo{width:110px;height:110px;border-radius:50%;overflow:hidden;background:linear-gradient(135deg,#a8c98a,var(--g));margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:38px;transition:transform .35s;box-shadow:0 6px 20px rgba(26,107,58,.25)}
+    .leader-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .4s}
+    .leader-card:hover .leader-photo img{transform:scale(1.08)}
+    .leader-card.president .leader-photo{width:130px;height:130px;background:linear-gradient(135deg,var(--g),var(--gd));border:4px solid var(--au)}
+    .leader-name{font-family:'Fraunces',serif;font-weight:700;font-size:13px;color:var(--earth);line-height:1.25;margin-bottom:4px}
+    .leader-role{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--au);font-weight:600;margin-bottom:10px}
+    .leader-card.president .leader-role{color:var(--g);font-weight:700}
+    .leader-socials{display:flex;justify-content:center;gap:7px;margin-top:8px;flex-wrap:wrap}
+    .leader-soc-link{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--gl);border:1px solid #c0dbc8;transition:background .2s,transform .2s;text-decoration:none}
+    .leader-soc-link:hover{background:var(--g);transform:scale(1.15)}
+    .leader-soc-link:hover svg{fill:#fff}
+    .leader-soc-link svg{width:13px;height:13px;fill:var(--g)}
+    .leader-soc-link.whatsapp svg{fill:#25D366}.leader-soc-link.facebook svg{fill:#1877F2}
+    .leader-soc-link.instagram svg{fill:#E1306C}.leader-soc-link.linkedin svg{fill:#0A66C2}
+    .leader-soc-link.whatsapp:hover{background:#25D366}.leader-soc-link.facebook:hover{background:#1877F2}
+    .leader-soc-link.instagram:hover{background:#E1306C}.leader-soc-link.linkedin:hover{background:#0A66C2}
+    .leader-soc-link:hover svg{fill:#fff !important}
+    .president-quote-block{background:var(--parch);border-radius:8px;padding:24px 28px;margin-top:24px;border-left:4px solid var(--au);display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
+    .president-image{flex-shrink:0}
+    .president-photo{width:160px;height:160px;border-radius:50%;object-fit:cover;border:4px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.15)}
+    .president-quote-block blockquote{font-family:'Fraunces',serif;font-style:italic;font-size:clamp(14px,1.6vw,18px);font-weight:300;color:var(--earth);line-height:1.5;margin-bottom:12px}
+    .president-bio{font-size:13px;color:rgba(61,43,10,.65);line-height:1.7;margin-bottom:16px}
+    .tenure-badge{display:inline-block;background:var(--g);color:#fff;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:2px;box-shadow:0 3px 0 var(--gd)}
+
+    /* ── CONTACT ── */
+    .contact-band{background:#fff;border-top:1.5px solid #e0e0e0;padding:clamp(36px,5vw,60px) clamp(16px,4vw,44px)}
+    .contact-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,36px)}
+    .contact-card{padding:22px;border-radius:8px;border:1px solid var(--dust);background:#FAF5E8;transition:transform .3s,box-shadow .3s}
+    .contact-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(61,43,10,.1)}
+    .contact-lbl{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--au);font-weight:700;margin-bottom:6px}
+    .contact-val{font-family:'Fraunces',serif;font-size:clamp(13px,1.6vw,16px);font-weight:700;color:var(--earth)}
+    .contact-sub{font-size:12px;color:var(--grl);margin-top:3px}
+
+    /* ── FOOTER ── */
+    footer{background:var(--gd);padding:clamp(18px,2.5vw,24px) clamp(16px,4vw,44px);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+    .footer-brand{font-family:'Fraunces',serif;font-weight:900;font-size:15px;color:rgba(255,255,255,.85)}
+    .footer-copy{font-size:11px;color:rgba(255,255,255,.35)}
+    .footer-tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--au);font-weight:600}
+
+    /* ════════════════════════════════
+       LARGE DESKTOP / WIDE MONITORS — ≥1440px
+       Keep content readable, don't let it stretch edge-to-edge
+    ════════════════════════════════ */
+    @media(min-width:1440px){
+      .stats-inner,.about-inner,.ngrp-inner,.afla-inner,.sdp-inner,.timeline-inner,
+      .cluster-inner,.section-inner,.contact-inner,.mission-inner{max-width:1240px}
+    }
+
+    /* ════════════════════════════════
+       LAPTOP / SMALL DESKTOP — 1024px–1279px
+       Tighten side padding a touch, keep multi-column layouts
+    ════════════════════════════════ */
+    @media(max-width:1279px) and (min-width:1024px){
+      .all-leaders{gap:14px}
+    }
+
+    /* ════════════════════════════════
+       TABLET — 768px–1023px
+    ════════════════════════════════ */
+    @media(min-width:768px) and (max-width:1023px){
+      .about-inner{grid-template-columns:1fr}
+      .ngrp-inner{grid-template-columns:1fr}
+      .afla-grid{grid-template-columns:1fr}
+      .all-leaders{grid-template-columns:repeat(3,1fr)}
+      .sdp-grid{grid-template-columns:1fr 1fr}
+      .cluster-structure{grid-template-columns:1fr 1fr}
+      .hero-layout{grid-template-columns:1fr}
+      .hero-content{max-width:640px}
+      .stats-inner{grid-template-columns:1fr 1fr}
+      .contact-inner{grid-template-columns:1fr 1fr}
+      .mission-inner{grid-template-columns:1fr 1fr}
+    }
+
+    /* ════════════════════════════════
+       MOBILE RESPONSIVE — ≤767px
+    ════════════════════════════════ */
+    @media(max-width:767px){
+      /* nav */
+      .hamburger{display:flex}
+      .nav-inner{display:none;flex-direction:column;width:100%;background:var(--gd)}
+      .nav-inner.mobile-open{display:flex}
+      .nav-primary a{width:100%;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.07)}
+      .nav-secondary{display:none}
+      .nav-mobile-divider{display:block;width:100%;padding:8px 20px 4px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.45);background:rgba(0,0,0,.15)}
+      .nav-mobile-extra{display:block;width:100%;color:rgba(255,255,255,.85);font-weight:500;font-size:12px;letter-spacing:.05em;text-transform:uppercase;text-decoration:none;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.1)}
+      .nav-mobile-extra:hover{background:rgba(0,0,0,.25)}
+
+      /* hero */
+      .hero{min-height:60vh}
+      .hero-layout{grid-template-columns:1fr}
+      .hero-content{padding:32px 20px}
+      .slide-dots{left:20px}
+
+      /* stats */
+      .stats-inner{grid-template-columns:1fr 1fr}
+      .stat-tile{height:220px}
+
+      /* about */
+      .about-inner{grid-template-columns:1fr;gap:28px}
+      .objectives-grid{grid-template-columns:1fr}
+      .membership-stats{grid-template-columns:1fr 1fr 1fr}
+
+      /* mission pillars */
+      .mission-inner{grid-template-columns:1fr}
+      .pillar-canvas{height:200px}
+
+      /* sdp */
+      .sdp-grid{grid-template-columns:1fr}
+
+      /* ngrp */
+      .ngrp-inner{grid-template-columns:1fr;gap:28px}
+      .ngrp-meta{grid-template-columns:1fr 1fr}
+
+      /* afla */
+      .afla-grid{grid-template-columns:1fr;gap:24px}
+      .afla-stat-row{grid-template-columns:1fr 1fr 1fr}
+
+      /* cluster */
+      .cluster-structure{grid-template-columns:1fr 1fr}
+      #clusterCards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
+
+      /* leadership */
+      .all-leaders{grid-template-columns:1fr 1fr;gap:14px}
+      .leader-card{padding:18px 12px 14px}
+      .leader-photo{width:90px;height:90px}
+      .leader-card.president .leader-photo{width:110px;height:110px}
+      .president-quote-block{flex-direction:column;align-items:center;text-align:center;padding:20px}
+      .president-photo{width:130px;height:130px}
+      .leader-soc-link{width:32px;height:32px}
+
+      /* contact */
+      .contact-inner{grid-template-columns:1fr}
+
+      /* footer */
+      footer{flex-direction:column;text-align:center;gap:6px}
+
+      /* chat */
+      #chatBox{right:0;left:0;bottom:0;width:100%;max-width:100%;border-radius:18px 18px 0 0;max-height:85vh;transform-origin:bottom center}
+      #chatToggleBtn{right:16px;bottom:16px}
+      .chat-messages{max-height:calc(85vh - 240px)}
+    }
+
+    @media(max-width:479px){
+      .stats-inner{grid-template-columns:1fr}
+      .all-leaders{grid-template-columns:1fr 1fr}
+      .afla-stat-row{grid-template-columns:1fr}
+      .ngrp-meta{grid-template-columns:1fr}
+      .objectives-grid{grid-template-columns:1fr}
+      .membership-stats{grid-template-columns:1fr}
+      .hero-headline{letter-spacing:-.5px}
+      .ticker-item{font-size:10px;padding:0 20px}
+    }
+
+    /* small phones */
+    @media(max-width:359px){
+      .all-leaders{grid-template-columns:1fr}
+      .stats-inner{grid-template-columns:1fr}
+    }
+
+    /* landscape phones — keep hero from swallowing the whole viewport */
+    @media(max-width:900px) and (max-height:480px) and (orientation:landscape){
+      .hero{min-height:auto;padding:40px 0}
+      .hero-layout{min-height:auto}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker-label">📢 News</div>
+    <div class="ticker-track">
+      <div class="ticker-item">Nigeria Groundnut Revival Programme (NGRP) launches World Food Day — 16 October 2026, Abuja</div><span class="ticker-sep">|</span>
+      <div class="ticker-item">NGROPPMAN 2026 Annual Conference — Abuja International Conference Centre, August 14–16</div><span class="ticker-sep">|</span>
+      <div class="ticker-item">New Export Facilitation Window opens for members — Apply before July 30, 2026</div><span class="ticker-sep">|</span>
+      <div class="ticker-item">Federal Govt partners NGROPPMAN on ₦10B Groundnut Value Chain Fund</div><span class="ticker-sep">|</span>
+      <div class="ticker-item">Aflatoxin Control Project targets 100,000 farmers across 12 producing states — Register now</div><span class="ticker-sep">|</span>
+      <div class="ticker-item">EU Oilseed market projected to hit $493 billion by 2033 — NGROPPMAN members first to benefit</div><span class="ticker-sep">|</span>
+      <div class="ticker-item">SDP 2026–2031 target: 1,000,000 registered members and ₦5 Billion Internal Capital Pool</div><span class="ticker-sep">|</span>
+      <div class="ticker-item">Nigeria Groundnut Revival Programme (NGRP) launches World Food Day — 16 October 2026, Abuja</div><span class="ticker-sep">|</span>
+      <div class="ticker-item">NGROPPMAN 2026 Annual Conference — Abuja International Conference Centre, August 14–16</div><span class="ticker-sep">|</span>
+      <div class="ticker-item">New Export Facilitation Window opens for members — Apply before July 30, 2026</div><span class="ticker-sep">|</span>
+      <div class="ticker-item">Federal Govt partners NGROPPMAN on ₦10B Groundnut Value Chain Fund</div><span class="ticker-sep">|</span>
+      <div class="ticker-item">Aflatoxin Control Project targets 100,000 farmers across 12 producing states — Register now</div><span class="ticker-sep">|</span>
+      <div class="ticker-item">EU Oilseed market projected to hit $493 billion by 2033 — NGROPPMAN members first to benefit</div><span class="ticker-sep">|</span>
+      <div class="ticker-item">SDP 2026–2031 target: 1,000,000 registered members and ₦5 Billion Internal Capital Pool</div><span class="ticker-sep">|</span>
+    </div>
+  </div>
+
+  <!-- SOCIAL BAR -->
+  <div class="soc">
+    <a href="tel:+2348065694441" title="Call"><svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg></a>
+    <a href="mailto:info@ngroppman.org.ng" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+    <a href="https://wa.me/2348065694441" title="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+    <a href="https://facebook.com/ngroppman" title="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+    <a href="https://instagram.com/ngroppman" title="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+    <a href="https://twitter.com/ngroppman" title="X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+    <a href="https://linkedin.com/company/ngroppman" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+  </div>
+
+  <!-- BRAND -->
+  <div class="brand">
+    <div class="brand-inner">
+      <div class="logos-pair">
+        <img class="logo-img" id="coatImg" alt="Coat of Arms" src="coat of arm.jpeg">
+        <div class="brand-div"></div>
+        <img class="logo-img" id="ngropLogo" alt="NGROPPMAN Logo" src="ngroppman logo.jpeg">
+      </div>
+      <div class="brand-txt">
+        <div class="brand-title">NGROPPMAN | <span>National Groundnuts Producers, Processors &amp; Marketers Association of Nigeria</span></div>
+        <div class="brand-tag">...Uniting Nigeria's Groundnut Value Chain!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav-primary" id="primaryNav">
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <div class="nav-inner" id="navInner">
+      <a href="#about">About Us</a>
+      <a href="#sdp">Strategic Plan</a>
+      <a href="#ngrp">NGRP Launch</a>
+      <a href="#aflatoxin">Aflatoxin</a>
+      <a href="#leadership">Leadership</a>
+      <a href="https://script.google.com/macros/s/AKfycbzAKwoaIboFCBFGffZkuH5PROyq7KS2VDOK-yNWleL2eRk4xFeD0bsFcw1NHvphHNA/exec">Register</a>
+      <a href="#contact">Contact</a>
+      <div class="nav-mobile-divider">More</div>
+      <a href="#" class="nav-mobile-extra">My Dashboard</a>
+      <a href="#" class="nav-mobile-extra">Members</a>
+      <a href="#cluster" class="nav-mobile-extra">Cluster System</a>
+      <a href="event.html" class="nav-mobile-extra">News &amp; Events</a>
+      <a href="https://script.google.com/macros/s/AKfycbzAKwoaIboFCBFGffZkuH5PROyq7KS2VDOK-yNWleL2eRk4xFeD0bsFcw1NHvphHNA/exec" class="nav-mobile-extra">Join Now</a>
+      <a href="Chatbolt.html" class="nav-mobile-extra">Chat bolt</a>
+    </div>
+  </nav>
+  <nav class="nav-secondary">
+    <a href="#">My Dashboard</a>
+    <a href="#">Members</a>
+    <a href="#cluster">Cluster System</a>
+    <a href="event.html">News &amp; Events</a>
+    <a href="https://script.google.com/macros/s/AKfycbzAKwoaIboFCBFGffZkuH5PROyq7KS2VDOK-yNWleL2eRk4xFeD0bsFcw1NHvphHNA/exec">Join Now</a>
+     <a href="Chatbolt.html">Chat bolt</a>
+  </nav>
+  <div class="breadcrumb">Home</div>
+
+  <!-- HERO -->
+  <section class="hero" id="hero" aria-labelledby="heroHead">
+    <div id="heroSlides">
+  <div class="hslide active" style="background-image:url('digital farm.jpg');" aria-label="digital farm"></div>
+  <div class="hslide" style="background-image:url('farm harvest.jpg');" aria-label="farm harvest"></div>
+  <div class="hslide" style="background-image:url('groundnut farm work.jpg');" aria-label="groundnut farm work"></div>
+  <div class="hslide" style="background-image:url('groundnut sprout.jpg');" aria-label="groundnut sprout"></div>
+  <div class="hslide" style="background-image:url('peanut butter.jpg');" aria-label="Peanut butter"></div>
+  <div class="hslide" style="background-image:url('pyradmid 2.jpg');" aria-label="pyramid"></div>
+</div>
+    <div class="hero-overlay"></div>
+    <div class="hero-layout">
+      <div class="hero-content">
+        <span class="hero-eyebrow">National Groundnuts Producers, Processors &amp; Marketers Association of Nigeria</span>
+        <h1 class="hero-headline" id="heroHead">From <em>field</em><br>to global<br>market.</h1>
+        <p class="hero-body">NGROPPMAN is a national commodity-based association established to promote sustainable production, processing, marketing, value addition, trade, and industrial utilization of groundnut across Nigeria.</p>
+        <div class="hero-cta">
+          <a href="#about" class="btn-gold">Join the Network</a>
+          <a href="#about" class="btn-outline-w">Our mission →</a>
+        </div>
+      </div>
+    </div>
+    <div class="slide-dots" id="slideDots" role="tablist"></div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-band" id="statsBand">
+    <div class="stats-inner">
+      <div class="stat-tile" style="background-image:url('ngroppman logo.jpeg');">
+        <div class="stat-content"><span class="stat-icon">🗺️</span><div class="stat-num" data-target="36">0</div><div class="stat-lbl">States Represented</div><div class="stat-sub">All states + FCT</div></div>
+      </div>
+      <div class="stat-tile" style="background-image:url('empower women.jpg');">
+        <div class="stat-content"><span class="stat-icon">🤝</span><div class="stat-num" data-target="50000">0</div><div class="stat-lbl">Individual Members</div><div class="stat-sub">Farmers, processors &amp; traders</div></div>
+      </div>
+      <div class="stat-tile" style="background-image:url('milling factory.jpg');">
+        <div class="stat-content"><span class="stat-icon">🏭</span><div class="stat-num" data-target="5">0</div><div class="stat-lbl">Capital Target 2031</div><div class="stat-sub">₦5B internal pool</div></div>
+      </div>
+      <div class="stat-tile" style="background-image:url('Delivering best quality peanuts across the world.jpg');">
+        <div class="stat-content"><span class="stat-icon">🌍</span><div class="stat-num" data-target="493">0</div><div class="stat-lbl">EU Oilseed Market $B</div><div class="stat-sub">Projected 2026–2033</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about" class="about-band">
+    <div class="about-inner">
+      <div class="about-text">
+        <span class="section-label">Organizational Profile</span>
+        <h2 class="section-title" style="color:var(--earth)">Who We Are</h2>
+        <p>NGROPPMAN serves as the umbrella organization representing stakeholders along the entire groundnut value chain, including smallholder farmers, commercial producers, aggregators, processors, input suppliers, exporters, traders, researchers, financial institutions, and development partners.</p>
+        <p style="margin-top:10px">From a strategic perspective, NGROPPMAN has the potential to evolve beyond a commodity association into a nationally recognized commodity-development institution. The rebranding pathway is: <strong style="color:var(--g)">Build the Association → Activate the Programmes → Attract Investments.</strong></p>
+        <div class="membership-stats">
+          <div class="ms-card"><div class="ms-num">50,000+</div><div class="ms-lbl">Individual Members</div></div>
+          <div class="ms-card"><div class="ms-num">1,500+</div><div class="ms-lbl">Cooperatives</div></div>
+          <div class="ms-card"><div class="ms-num">500+</div><div class="ms-lbl">Processors &amp; SMEs</div></div>
+        </div>
+        <h3 style="font-family:'Fraunces',serif;font-size:15px;color:var(--earth);margin-top:22px;margin-bottom:10px">Core Objectives</h3>
+        <div class="objectives-grid">
+          <div class="obj-item"><span class="obj-num">01</span>Promote sustainable groundnut production nationwide</div>
+          <div class="obj-item"><span class="obj-num">02</span>Improve access to quality inputs &amp; mechanization</div>
+          <div class="obj-item"><span class="obj-num">03</span>Strengthen processing &amp; value addition capacity</div>
+          <div class="obj-item"><span class="obj-num">04</span>Facilitate access to local &amp; international markets</div>
+          <div class="obj-item"><span class="obj-num">05</span>Advocate for favorable policies &amp; regulatory reforms</div>
+          <div class="obj-item"><span class="obj-num">06</span>Promote food safety, quality standards &amp; certification</div>
+          <div class="obj-item"><span class="obj-num">07</span>Facilitate access to finance &amp; investment opportunities</div>
+          <div class="obj-item"><span class="obj-num">08</span>Encourage youth &amp; women participation in the value chain</div>
+          <div class="obj-item"><span class="obj-num">09</span>Support research, innovation &amp; climate-smart agriculture</div>
+          <div class="obj-item"><span class="obj-num">10</span>Strengthen coordination among value chain actors</div>
+        </div>
+      </div>
+      <div class="vision-mission">
+        <div class="vm-card"><div class="vm-icon">👁️</div><div class="vm-title">Our Vision</div><div class="vm-body">To become the leading commodity association driving a globally competitive, inclusive, and sustainable groundnut industry in Nigeria.</div></div>
+        <div class="vm-card"><div class="vm-icon">🎯</div><div class="vm-title">Our Mission</div><div class="vm-body">To strengthen the groundnut value chain through advocacy, capacity building, market development, innovation, investment promotion, and strategic partnerships that improve incomes, food security, and economic growth.</div></div>
+        <div class="vm-card"><div class="vm-icon">🤝</div><div class="vm-title">Value Proposition</div><div class="vm-body">NGROPPMAN provides a platform for coordination, advocacy, business development, investment facilitation, market linkage, capacity development, and policy engagement for all stakeholders in Nigeria's groundnut value chain.</div></div>
+        <div class="vm-card" style="border-top-color:var(--g)"><div class="vm-icon">👤</div><div class="vm-title">National President</div><div class="vm-body"><strong>Abdulrazaq Usman Mohammad</strong><br><span style="font-size:11px;color:var(--au)">Compiled by: Rabiu Auwalu Yakasai, GM — Commercial Agricultural Extension Enterprises (CAEE)</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MISSION PILLARS -->
+  <div class="mission-band">
+    <div class="mission-inner">
+      <div class="pillar"><canvas class="pillar-canvas" id="p1"></canvas>
+        <div class="pillar-overlay"></div>
+        <div class="pillar-content"><div class="pillar-num">I</div><div class="pillar-title">Industrialisation</div><p class="pillar-body">Advancing mechanized processing and value-addition infrastructure from oil extraction to packaging — lifting Nigerian groundnut from raw commodity to finished global product.</p></div>
+      </div>
+      <div class="pillar"><canvas class="pillar-canvas" id="p2"></canvas>
+        <div class="pillar-overlay"></div>
+        <div class="pillar-content"><div class="pillar-num">II</div><div class="pillar-title">Farmer Welfare</div><p class="pillar-body">Ensuring fair pricing, access to improved seeds, mechanization, climate-smart farming programs, and capacity-building that protect the livelihoods of 50,000+ smallholder producers.</p></div>
+      </div>
+      <div class="pillar"><canvas class="pillar-canvas" id="p3"></canvas>
+        <div class="pillar-overlay"></div>
+        <div class="pillar-content"><div class="pillar-num">III</div><div class="pillar-title">Market Access</div><p class="pillar-body">Opening corridors to domestic and international buyers through commodity aggregation centers, export certification programs, and a national digital market intelligence platform.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SDP -->
+  <section id="sdp" class="sdp-band">
+    <div class="sdp-inner">
+      <span class="section-label">Strategic Development Plan</span>
+      <h2 class="section-title">SDP 2026–2031: Vision for Nigeria's Groundnut Future</h2>
+      <p style="font-size:14px;color:var(--grl);margin-top:12px;max-width:700px">Target by 2031: <strong style="color:var(--g)">1,000,000 registered members</strong> and <strong style="color:var(--g)">₦5 Billion Internal Capital Pool.</strong></p>
+      <div class="sdp-grid">
+        <div class="sdp-card"><div class="sdp-goal">Goal 1</div><div class="sdp-title">Institutional Strengthening</div><div class="sdp-target">Membership database, digital registration, governance reforms, secretariat strengthening.<strong>Target: 1,000,000 members · Functional chapters all states</strong></div></div>
+        <div class="sdp-card"><div class="sdp-goal">Goal 2</div><div class="sdp-title">Production Enhancement</div><div class="sdp-target">Improved seed distribution, extension support, mechanization services, climate-smart farming.<strong>Target: 50% increase in member productivity</strong></div></div>
+        <div class="sdp-card"><div class="sdp-goal">Goal 3</div><div class="sdp-title">Processing &amp; Value Addition</div><div class="sdp-target">Processing clusters, technology upgrades, quality assurance systems.<strong>Target: 30 new processing hubs</strong></div></div>
+        <div class="sdp-card"><div class="sdp-goal">Goal 4</div><div class="sdp-title">Market Development</div><div class="sdp-target">Market information platform, commodity aggregation centers, export readiness programs.<strong>Target: 40% increase in organized market transactions</strong></div></div>
+        <div class="sdp-card"><div class="sdp-goal">Goal 5</div><div class="sdp-title">Finance &amp; Investment</div><div class="sdp-target">Investment forums, credit linkage schemes, development finance partnerships.<strong>Target: ₦20 billion investment mobilized</strong></div></div>
+        <div class="sdp-card"><div class="sdp-goal">Goals 6 &amp; 7</div><div class="sdp-title">Youth, Women &amp; Digital Agriculture</div><div class="sdp-target">Entrepreneurship programs, business incubation, digital extension, national traceability system.<strong>Target: 2M youth &amp; women beneficiaries</strong></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <div class="timeline-band">
+    <div class="timeline-inner">
+      <span class="section-label" style="color:#a3d977">Execution Timeline</span>
+      <h2 class="section-title" style="color:#fff">SDP Rollout 2026–2031</h2>
+      <div class="timeline">
+        <div class="tl-item year-2026"><div class="tl-dot"></div><div class="tl-year">2026</div><div class="tl-card"><ul><li>🏢 Organizational restructuring</li><li>👥 Membership audit &amp; cleanup</li><li>💻 Digital registration platform launch</li><li>🚀 NGRP Launch — World Food Day</li></ul></div></div>
+        <div class="tl-item year-2027"><div class="tl-dot"></div><div class="tl-year">2027</div><div class="tl-card"><ul><li>📈 National membership expansion drive</li><li>🏭 Pilot aggregation centers</li><li>🛡️ Aflatoxin Control Project Phase I</li></ul></div></div>
+        <div class="tl-item year-2028"><div class="tl-dot"></div><div class="tl-year">2028</div><div class="tl-card"><ul><li>🏗️ Processing cluster development</li><li>🌍 Export readiness initiatives</li><li>🔬 Aflatoxin testing centers operational</li></ul></div></div>
+        <div class="tl-item year-2029"><div class="tl-dot"></div><div class="tl-year">2029</div><div class="tl-card"><ul><li>🔗 National traceability system rollout</li><li>📊 Market intelligence platform launch</li></ul></div></div>
+        <div class="tl-item year-2030"><div class="tl-dot"></div><div class="tl-year">2030–2031</div><div class="tl-card"><ul><li>⬆️ Scale-up processing &amp; export capacity</li><li>🤝 Strategic partnerships expansion</li><li>📅 Development of SDP 2032–2037</li></ul></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NGRP -->
+  <section id="ngrp" class="ngrp-band">
+    <div class="ngrp-inner">
+      <div>
+        <div class="ngrp-badge">🚀 Flagship Initiative</div>
+        <h2 class="ngrp-headline">Nigeria Groundnut<br>Revival Programme<br><em style="font-style:italic;color:var(--al)">(NGRP)</em></h2>
+        <div class="ngrp-theme">"Groundnut for Food Security, Jobs and National Prosperity"</div>
+        <p class="ngrp-body">NGROPPMAN proposes the launch of the NGRP as a nationwide movement to mobilize citizens, farmers, investors, processors, development partners and governments towards revitalizing the Nigerian groundnut industry — targeting one million stakeholder enrollments.</p>
+        <div class="ngrp-meta">
+          <div class="ngrp-meta-card"><div class="ngrp-meta-lbl">Launch Date</div><div class="ngrp-meta-val">World Food Day — 16 October 2026</div></div>
+          <div class="ngrp-meta-card"><div class="ngrp-meta-lbl">Venue</div><div class="ngrp-meta-val">Abuja International Conference Centre + 36 States &amp; FCT</div></div>
+          <div class="ngrp-meta-card"><div class="ngrp-meta-lbl">Physical Attendance</div><div class="ngrp-meta-val">2,000+ Participants</div></div>
+          <div class="ngrp-meta-card"><div class="ngrp-meta-lbl">Virtual Attendance</div><div class="ngrp-meta-val">100,000+ Participants</div></div>
+          <div class="ngrp-meta-card"><div class="ngrp-meta-lbl">Estimated Budget</div><div class="ngrp-meta-val">₦500 Million</div></div>
+          <div class="ngrp-meta-card"><div class="ngrp-meta-lbl">Membership Target</div><div class="ngrp-meta-val">1,000,000 Stakeholders</div></div>
+        </div>
+      </div>
+      <div class="ngrp-activities">
+        <div class="ngrp-act"><div class="ngrp-act-title">🎉 Official Launch Ceremony</div><div class="ngrp-act-body">Unveiling of the National Groundnut Development Plan, NGROPPMAN Digital Membership Platform &amp; National Groundnut Database.</div></div>
+        <div class="ngrp-act"><div class="ngrp-act-title">💼 National Investment Forum</div><div class="ngrp-act-body">Investor roundtable, financing opportunities, and public-private partnership sessions with financial institutions and agribusiness investors.</div></div>
+        <div class="ngrp-act"><div class="ngrp-act-title">🌾 Value Chain Exhibition</div><div class="ngrp-act-body">Seeds, mechanization, processing technologies, financial products, and export opportunities showcased to participants.</div></div>
+        <div class="ngrp-act"><div class="ngrp-act-title">🏆 Youth Enterprise Challenge</div><div class="ngrp-act-body">Business plan competition, innovation showcase, and startup grants for young agripreneurs across Nigeria.</div></div>
+        <div class="ngrp-act"><div class="ngrp-act-title">👩 Women's Enterprise Forum</div><div class="ngrp-act-body">Capacity building sessions and market linkage programs for women agribusiness groups across all 36 states.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AFLATOXIN -->
+  <section id="aflatoxin" class="afla-band">
+    <div class="afla-inner">
+      <span class="section-label">Federal Government Proposal</span>
+      <h2 class="section-title">National Aflatoxin Contamination Control Program</h2>
+      <p style="font-size:14px;color:var(--grl);margin-top:12px;max-width:700px">NGROPPMAN proposes a 3-year, nationwide control program targeting 100,000 farmers to eliminate this critical threat to Nigeria's groundnut industry.</p>
+      <div class="afla-stat-row">
+        <div class="afla-stat"><div class="afla-stat-num">100,000</div><div class="afla-stat-lbl">Farmers Targeted</div></div>
+        <div class="afla-stat"><div class="afla-stat-num">60–80%</div><div class="afla-stat-lbl">Contamination Reduction</div></div>
+        <div class="afla-stat"><div class="afla-stat-num">30%+</div><div class="afla-stat-lbl">Income Increase</div></div>
+      </div>
+      <div class="afla-grid">
+        <div>
+          <h3 style="font-family:'Fraunces',serif;font-size:16px;color:var(--earth);margin-bottom:14px">Project Activities</h3>
+          <div class="afla-activities">
+            <div class="afla-act"><div class="afla-act-icon">📚</div><div><div class="afla-act-title">Farmer Capacity Building</div><div class="afla-act-body">Nationwide training workshops, extension materials in local languages, and demonstration farms.</div></div></div>
+            <div class="afla-act"><div class="afla-act-icon">🛠️</div><div><div class="afla-act-title">Aflatoxin Control Technologies</div><div class="afla-act-body">Solar drying tarpaulins, moisture meters, hermetic storage bags distributed to beneficiaries.</div></div></div>
+            <div class="afla-act"><div class="afla-act-icon">🔬</div><div><div class="afla-act-title">Testing &amp; Certification Centers</div><div class="afla-act-body">Regional aflatoxin testing laboratories, mobile rapid testing units, and certification systems.</div></div></div>
+            <div class="afla-act"><div class="afla-act-icon">📢</div><div><div class="afla-act-title">Awareness Campaigns</div><div class="afla-act-body">Radio and media outreach, stakeholder sensitization, consumer education on food safety risks.</div></div></div>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-family:'Fraunces',serif;font-size:16px;color:var(--earth);margin-bottom:10px">Coverage: 12 Priority States</h3>
+          <div class="states-list">
+            <span class="state-tag">Kano</span><span class="state-tag">Kaduna</span><span class="state-tag">Katsina</span><span class="state-tag">Jigawa</span><span class="state-tag">Bauchi</span><span class="state-tag">Kebbi</span><span class="state-tag">Sokoto</span><span class="state-tag">Zamfara</span><span class="state-tag">Niger</span><span class="state-tag">Borno</span><span class="state-tag">Benue</span><span class="state-tag">Taraba</span>
+          </div>
+          <h3 style="font-family:'Fraunces',serif;font-size:16px;color:var(--earth);margin:22px 0 10px">Expected Outcomes</h3>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--grl)"><span style="color:var(--g);font-size:15px">✓</span>60–80% reduction in aflatoxin contamination levels</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--grl)"><span style="color:var(--g);font-size:15px">✓</span>Improved market value of groundnut products</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--grl)"><span style="color:var(--g);font-size:15px">✓</span>Increased farmer income by at least 30%</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--grl)"><span style="color:var(--g);font-size:15px">✓</span>Enhanced food safety for Nigerian consumers</div>
+            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--grl)"><span style="color:var(--g);font-size:15px">✓</span>Improved access to export markets</div>
+          </div>
+          <div style="background:var(--parch);border-radius:6px;padding:14px;margin-top:18px;border-left:3px solid var(--au)">
+            <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--au);font-weight:700;margin-bottom:4px">Project Duration</div>
+            <div style="font-family:'Fraunces',serif;font-weight:700;font-size:18px;color:var(--earth)">36 Months</div>
+            <div style="font-size:12px;color:var(--grl);margin-top:2px">Government partnership &amp; funding requested from Federal Government of Nigeria</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLUSTER -->
+  <section id="cluster" class="cluster-band">
+    <div class="cluster-inner">
+      <span class="section-label">Cluster Management System</span>
+      <h2 class="section-title">One Cluster — One Business Plan — One Prosperous Community</h2>
+      <p style="font-size:14px;color:var(--grl);margin-top:12px;max-width:700px">The NGROPPMAN Cluster Management System organizes members into geographically defined, commercially viable groups across all 36 states and FCT.</p>
+      <div class="cluster-structure">
+        <div class="cluster-level"><div class="cl-icon">🏛️</div><div class="cl-title">National Level</div><div class="cl-items">National Cluster Coordination Committee (NCCC)<br>Policy direction · National planning</div></div>
+        <div class="cluster-level"><div class="cl-icon">🏢</div><div class="cl-title">State Level</div><div class="cl-items">State Cluster Management Committee (SCMC)<br>Coordinate clusters · Capacity building</div></div>
+        <div class="cluster-level"><div class="cl-icon">🏘️</div><div class="cl-title">LGA Level</div><div class="cl-items">LGA Cluster Committee<br>Member mobilization · Input distribution</div></div>
+        <div class="cluster-level"><div class="cl-icon">🌾</div><div class="cl-title">Community Level</div><div class="cl-items">Groundnut Enterprise Cluster (GEC)<br>100–500 Farmers · 20–50 Processors</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:22px">
+        <div style="background:#fff;border-radius:8px;padding:18px;border-top:3px solid var(--g)"><h4 style="font-family:'Fraunces',serif;font-size:14px;color:var(--earth);margin-bottom:7px">📦 Commodity Aggregation</h4><p style="font-size:12px;color:var(--grl)">Each cluster establishes collection centres, warehouses, quality inspection units, and digital weighing systems. Minimum target: 5,000 MT annually per mature cluster.</p></div>
+        <div style="background:#fff;border-radius:8px;padding:18px;border-top:3px solid var(--au)"><h4 style="font-family:'Fraunces',serif;font-size:14px;color:var(--earth);margin-bottom:7px">🏭 Processing Functions</h4><p style="font-size:12px;color:var(--grl)">Cleaning, sorting, shelling, oil extraction, cake production, packaging, branding, and quality certification. At least one processing hub per Senatorial District.</p></div>
+        <div style="background:#fff;border-radius:8px;padding:18px;border-top:3px solid var(--g)"><h4 style="font-family:'Fraunces',serif;font-size:14px;color:var(--earth);margin-bottom:7px">💻 Digital Management</h4><p style="font-size:12px;color:var(--grl)">Every member receives a unique membership number, digital ID card, and access to market prices, weather alerts, input requests, loan applications, and extension services.</p></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:14px">
+        <div style="background:var(--g);border-radius:6px;padding:14px;text-align:center"><div style="font-size:10px;color:rgba(255,255,255,.7);letter-spacing:.1em;text-transform:uppercase">Phase I (2026)</div><div style="font-size:13px;color:#fff;font-weight:600;margin-top:4px">Pilot clusters in 12 priority states</div></div>
+        <div style="background:var(--gd);border-radius:6px;padding:14px;text-align:center"><div style="font-size:10px;color:rgba(255,255,255,.7);letter-spacing:.1em;text-transform:uppercase">Phase II (2027–2028)</div><div style="font-size:13px;color:#fff;font-weight:600;margin-top:4px">Expansion to all 36 states &amp; FCT</div></div>
+        <div style="background:#0a2d18;border-radius:6px;padding:14px;text-align:center"><div style="font-size:10px;color:rgba(255,255,255,.7);letter-spacing:.1em;text-transform:uppercase">Phase III (2029–2031)</div><div style="font-size:13px;color:#fff;font-weight:600;margin-top:4px">Commodity exchanges &amp; digital trading</div></div>
+      </div>
+      <div class="cluster-principle">
+        <div class="cp-text">"One Cluster – One Business Plan – One Aggregation Centre – <em>One Digital Platform</em> – One Prosperous Community."</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEADERSHIP -->
+  <section id="leadership" class="section" style="background:#fff">
+    <div class="section-inner">
+      <span class="section-label">Association Leadership</span>
+      <h2 class="section-title">The people guiding the value chain.</h2>
+
+      <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+        <symbol id="ico-wa" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></symbol>
+        <symbol id="ico-fb" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></symbol>
+        <symbol id="ico-ig" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></symbol>
+        <symbol id="ico-li" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></symbol>
+      </svg>
+
+      <div class="all-leaders">
+        <div class="leader-card president">
+          <div class="leader-photo"><img src="president.jpeg" alt="Abdulrazaq Usman Muhammad" loading="lazy"></div>
+          <div class="leader-name">Abdulrazaq Usman Muhammad</div>
+          <div class="leader-role">National President</div>
+          <div class="leader-socials">
+            <a href="https://wa.me/2348065694441" class="leader-soc-link whatsapp" target="_blank"><svg><use href="#ico-wa"/></svg></a>
+            <a href="https://facebook.com/ngroppman" class="leader-soc-link facebook" target="_blank"><svg><use href="#ico-fb"/></svg></a>
+            <a href="https://instagram.com/ngroppman" class="leader-soc-link instagram" target="_blank"><svg><use href="#ico-ig"/></svg></a>
+            <a href="https://linkedin.com/company/ngroppman" class="leader-soc-link linkedin" target="_blank"><svg><use href="#ico-li"/></svg></a>
+          </div>
+        </div>
+        <div class="leader-card">
+          <div class="leader-photo"><img src="deputy president.jpeg" alt="Yemisi Ademidun Ogunyemi" loading="lazy"></div>
+          <div class="leader-name">Yemisi Ademidun Ogunyemi</div>
+          <div class="leader-role">Deputy National President</div>
+          <div class="leader-socials">
+            <a href="https://wa.me/" class="leader-soc-link whatsapp" target="_blank"><svg><use href="#ico-wa"/></svg></a>
+            <a href="https://facebook.com/" class="leader-soc-link facebook" target="_blank"><svg><use href="#ico-fb"/></svg></a>
+            <a href="https://instagram.com/" class="leader-soc-link instagram" target="_blank"><svg><use href="#ico-ig"/></svg></a>
+            <a href="https://linkedin.com/" class="leader-soc-link linkedin" target="_blank"><svg><use href="#ico-li"/></svg></a>
+          </div>
+        </div>
+        <div class="leader-card">
+          <div class="leader-photo"><img src="gen.sec.jpg" alt="Mustapha Mohammed" loading="lazy"></div>
+          <div class="leader-name">Mustapha Mohammed</div>
+          <div class="leader-role">Secretary General</div>
+          <div class="leader-socials">
+            <a href="https://wa.me/+2348033851997" class="leader-soc-link whatsapp" target="_blank"><svg><use href="#ico-wa"/></svg></a>
+            <a href="https://facebook.com/" class="leader-soc-link facebook" target="_blank"><svg><use href="#ico-fb"/></svg></a>
+            <a href="https://instagram.com/" class="leader-soc-link instagram" target="_blank"><svg><use href="#ico-ig"/></svg></a>
+            <a href="https://linkedin.com/" class="leader-soc-link linkedin" target="_blank"><svg><use href="#ico-li"/></svg></a>
+          </div>
+        </div>
+        <div class="leader-card">
+          <div class="leader-photo" style="background:linear-gradient(135deg,#a8c98a,var(--g))"><span style="font-size:38px">👤</span></div>
+          <div class="leader-name">Ibrahim Yusuf</div>
+          <div class="leader-role">Vice President (North-Central)</div>
+          <div class="leader-socials">
+            <a href="https://wa.me/" class="leader-soc-link whatsapp" target="_blank"><svg><use href="#ico-wa"/></svg></a>
+            <a href="https://facebook.com/" class="leader-soc-link facebook" target="_blank"><svg><use href="#ico-fb"/></svg></a>
+            <a href="https://instagram.com/" class="leader-soc-link instagram" target="_blank"><svg><use href="#ico-ig"/></svg></a>
+            <a href="https://linkedin.com/" class="leader-soc-link linkedin" target="_blank"><svg><use href="#ico-li"/></svg></a>
+          
+          </div>
+        </div>
+        <div class="leader-card">
+          <div class="leader-photo"><img src="Vice President, south west.jpeg" alt="Abddulfatah Sikiru Bello" loading="lazy"></div>
+          <div class="leader-name">Abddulfatah Sikiru Bello</div>
+          <div class="leader-role">Vice President (South-West)</div>
+          <div class="leader-socials">
+            <a href="https://wa.me/" class="leader-soc-link whatsapp" target="_blank"><svg><use href="#ico-wa"/></svg></a>
+            <a href="https://facebook.com/" class="leader-soc-link facebook" target="_blank"><svg><use href="#ico-fb"/></svg></a>
+          <a href="https://instagram.com/" class="leader-soc-link instagram" target="_blank"><svg><use href="#ico-ig"/></svg></a>
+            <a href="https://linkedin.com/" class="leader-soc-link linkedin" target="_blank"><svg><use href="#ico-li"/></svg></a>
+          </div>
+        </div>
+        <div class="leader-card">
+          <div class="leader-photo"><img src="Vice president, North West.jpeg" alt="Alh. Saidu Tanko Kura" loading="lazy"></div>
+          <div class="leader-name">Alh. Saidu Tanko Kura</div>
+          <div class="leader-role">Vice President (North-West)</div>
+          <div class="leader-socials">
+            <a href="https://wa.me/" class="leader-soc-link whatsapp" target="_blank"><svg><use href="#ico-wa"/></svg></a>
+            <a href="https://facebook.com/" class="leader-soc-link facebook" target="_blank"><svg><use href="#ico-fb"/></svg></a>
+          <a href="https://instagram.com/" class="leader-soc-link instagram" target="_blank"><svg><use href="#ico-ig"/></svg></a>
+            <a href="https://linkedin.com/" class="leader-soc-link linkedin" target="_blank"><svg><use href="#ico-li"/></svg></a>    
+          </div>
+        </div>
+        <div class="leader-card">
+          <div class="leader-photo"><img src="North East vice president.JPG" alt="Danladi Abdulkadir" loading="lazy"></div>
+          <div class="leader-name">Danladi Abdulkadir</div>
+          <div class="leader-role">Vice President (North-East)</div>
+          <div class="leader-socials">
+            <a href="https://wa.me/" class="leader-soc-link whatsapp" target="_blank"><svg><use href="#ico-wa"/></svg></a>
+            <a href="https://facebook.com/" class="leader-soc-link facebook" target="_blank"><svg><use href="#ico-fb"/></svg></a>
+            <a href="https://instagram.com/" class="leader-soc-link instagram" target="_blank"><svg><use href="#ico-ig"/></svg></a>
+            <a href="https://linkedin.com/" class="leader-soc-link linkedin" target="_blank"><svg><use href="#ico-li"/></svg></a>
+          </div>
+        </div>
+        <div class="leader-card">
+          <div class="leader-photo"><img src="south East Zonal vice president.jpeg" alt="Chief Ikechukwu Anthony" loading="lazy"></div>
+          <div class="leader-name">Chief Ikechukwu Anthony</div>
+          <div class="leader-role">Vice President (South-East)</div>
+          <div class="leader-socials">
+            <a href="https://wa.me/" class="leader-soc-link whatsapp" target="_blank"><svg><use href="#ico-wa"/></svg></a>
+            <a href="https://facebook.com/" class="leader-soc-link facebook" target="_blank"><svg><use href="#ico-fb"/></svg></a>
+            <a href="https://instagram.com/" class="leader-soc-link instagram" target="_blank"><svg><use href="#ico-ig"/></svg></a>
+            <a href="https://linkedin.com/" class="leader-soc-link linkedin" target="_blank"><svg><use href="#ico-li"/></svg></a>
+          </div>
+        </div>
+        <div class="leader-card">
+          <div class="leader-photo" style="background:linear-gradient(135deg,#1a8c5a,#0a4d30)"><span style="font-size:38px">👤</span></div>
+          <div class="leader-name">Engr. Blessing Tonye-Briggs</div>
+          <div class="leader-role">Vice President (South-South)</div>
+          <div class="leader-socials">
+            <a href="https://wa.me/" class="leader-soc-link whatsapp" target="_blank"><svg><use href="#ico-wa"/></svg></a>
+            <a href="https://facebook.com/" class="leader-soc-link facebook" target="_blank"><svg><use href="#ico-fb"/></svg></a>
+           <a href="https://instagram.com/" class="leader-soc-link instagram" target="_blank"><svg><use href="#ico-ig"/></svg></a>
+            <a href="https://linkedin.com/" class="leader-soc-link linkedin" target="_blank"><svg><use href="#ico-li"/></svg></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="president-quote-block">
+        <div class="president-image">
+          <img src="president.jpeg" alt="Abdulrazaq Usman Muhammad" class="president-photo">
+        </div>
+        <div>
+          <blockquote>"NGROPPMAN has the potential to evolve beyond a commodity association into a nationally recognized commodity-development institution. Our rebranding pathway is clear: Build the Association, Activate the Programmes, and Attract Investments."</blockquote>
+          <p class="president-bio">Abdulrazaq Usman Muhammad leads NGROPPMAN's transformation agenda — steering a national network of 50,000+ individual members, 1,500+ cooperatives, and 500+ processors across all 36 states and the FCT toward the SDP 2026–2031 vision.</p>
+          <span class="tenure-badge">National President — NGROPPMAN</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <div id="contact" class="contact-band">
+    <div class="contact-inner">
+      <div class="contact-card">
+        <div class="contact-lbl">Headquarters</div>
+        <div class="contact-val">Abuja, FCT</div>
+        <div class="contact-sub">Old Federal Secretariat, Block C, Room 111, FMITI Area 1 Garki Abuja</div>
+        <div class="contact-sub" style="margin-top:5px">Chapters in all 36 States</div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-lbl">Get in Touch</div>
+        <div class="contact-val">+234 8065694441</div>
+        <div class="contact-sub">ngroppman2027@gmail.com</div>
+        <div class="contact-sub" style="margin-top:4px">Mon–Fri, 8am–5pm WAT</div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-lbl">Partnerships &amp; Investment</div>
+        <div class="contact-val">Trade &amp; Advocacy</div>
+        <div class="contact-sub">For institutional partnerships, media or government liaison contact the Secretary General. Investment enquiries: NGROPPMAN Multipurpose Co-op Investment Society Ltd.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-brand">NGROPPMAN</div>
+    <div class="footer-copy">&copy; 2026 All Rights Reserved · Compiled by Rabiu Auwalu Yakasai, CAEE</div>
+    <div class="footer-tag">Nigeria's Groundnut Value Chain</div>
+  </footer>
+
+ 
+  <script>
+    // ── Hamburger Nav ──
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navInner = document.getElementById('navInner');
+    hamburgerBtn.addEventListener('click', () => {
+      const isOpen = navInner.classList.toggle('mobile-open');
+      hamburgerBtn.closest('nav').classList.toggle('open');
+      hamburgerBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    // Close nav on link click (mobile)
+    navInner.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        navInner.classList.remove('mobile-open');
+        hamburgerBtn.closest('nav').classList.remove('open');
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // ── Hero Slideshow ──
+    const hslides = document.querySelectorAll('.hslide');
+    const dotsEl = document.getElementById('slideDots');
+    const headlines = [
+      'From <em>field</em><br>to global<br>market.',
+      'Growing <em>together,</em><br>building<br>Nigeria.',
+      'From <em>farm</em><br>to factory<br>to world.',
+      'Harvesting<br><em>prosperity</em><br>for all.',
+      'One <em>crop,</em><br>one nation,<br>one vision.',
+      'Nourishing<br><em>millions</em><br>from the soil.'
+    ];
+    let cur = 0, tmr;
+    hslides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => goSlide(i);
+      dotsEl.appendChild(d);
+    });
+    function goSlide(n) {
+      hslides[cur].classList.remove('active');
+      document.querySelectorAll('.dot')[cur].classList.remove('active');
+      cur = n;
+      hslides[cur].classList.add('active');
+      document.querySelectorAll('.dot')[cur].classList.add('active');
+      document.getElementById('heroHead').innerHTML = headlines[cur];
+    }
+    tmr = setInterval(() => goSlide((cur + 1) % hslides.length), 5500);
+
+    // ── Counter Animation ──
+    function animateCounter(el, target, duration = 2200) {
+      let start = 0;
+      const increment = target / (duration / 16);
+      function update() {
+        start += increment;
+        if (start >= target) { start = target; el.textContent = formatNum(target); }
+        else { el.textContent = formatNum(Math.floor(start)); requestAnimationFrame(update); }
+      }
+      update();
+    }
+    function formatNum(n) {
+      if (n >= 1e9) return (n / 1e9).toFixed(0) + 'B';
+      if (n >= 1e6) return (n / 1e6).toFixed(0) + 'M';
+      if (n >= 1e4) return (n / 1e3).toFixed(0) + 'K';
+      return n.toLocaleString();
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const band = document.getElementById('statsBand');
+      const counters = document.querySelectorAll('.stat-num');
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            counters.forEach(c => { c.textContent = '0'; animateCounter(c, parseFloat(c.getAttribute('data-target'))); });
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.4 });
+      if (band) obs.observe(band);
+    });
+
+    // ── Pillar Canvases ──
+    function aP(id, fn) {
+      const c = document.getElementById(id);
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      c.width = c.offsetWidth || 360; c.height = c.offsetHeight || 280;
+      let t = 0;
+      function loop() { requestAnimationFrame(loop); ctx.clearRect(0,0,c.width,c.height); t+=0.015; fn(ctx,c.width,c.height,t); }
+      loop();
+    }
+    aP('p1',(ctx,w,h,t)=>{ctx.fillStyle='#1a0e04';ctx.fillRect(0,0,w,h);ctx.fillStyle='#4a3510';ctx.fillRect(w*.1,h*.55,w*.8,14);for(let i=0;i<6;i++){const bx=((t*60+i*(w*.8/5))%(w*.8))+w*.1;ctx.beginPath();ctx.arc(bx,h*.555+7,5,0,Math.PI*2);ctx.fillStyle='#c4a265';ctx.fill();}function gear(cx2,cy2,or2,ir2,teeth,ang){ctx.save();ctx.translate(cx2,cy2);ctx.rotate(ang);ctx.beginPath();for(let i=0;i<teeth;i++){const a=i/teeth*Math.PI*2,na=(i+.5)/teeth*Math.PI*2;ctx.lineTo(Math.cos(a)*or2,Math.sin(a)*or2);ctx.lineTo(Math.cos((a+na)/2)*(or2+7),Math.sin((a+na)/2)*(or2+7));ctx.lineTo(Math.cos(na)*or2,Math.sin(na)*or2);ctx.lineTo(Math.cos(na)*ir2,Math.sin(na)*ir2);}ctx.closePath();ctx.fillStyle='#7a5c1e';ctx.fill();ctx.strokeStyle='#c8860a';ctx.lineWidth=1.5;ctx.stroke();ctx.beginPath();ctx.arc(0,0,ir2*.5,0,Math.PI*2);ctx.fillStyle='#3a2408';ctx.fill();ctx.restore();}gear(w*.25,h*.42,26,18,10,t);gear(w*.55,h*.38,34,24,14,-t*.7);gear(w*.78,h*.44,20,14,8,t*1.2);ctx.fillStyle='#3a2408';ctx.fillRect(w*.05,h*.62,w*.9,h*.38);});
+    aP('p2',(ctx,w,h,t)=>{const sky=ctx.createLinearGradient(0,0,0,h*.6);sky.addColorStop(0,'#e8c97a');sky.addColorStop(1,'#c9963a');ctx.fillStyle=sky;ctx.fillRect(0,0,w,h);ctx.fillStyle='#1e7a40';ctx.beginPath();ctx.moveTo(0,h*.65);ctx.bezierCurveTo(w*.25,h*.5,w*.5,h*.72,w*.75,h*.55);ctx.bezierCurveTo(w*.88,h*.48,w,h*.58,w,h*.65);ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();ctx.fill();for(let i=0;i<5;i++){const px=w*(.12+i*.18),py=h*.78;ctx.strokeStyle='#1a6b3a';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px,py-18);ctx.stroke();ctx.fillStyle='#c4a265';ctx.beginPath();ctx.ellipse(px,py+4,7,4,0,0,Math.PI*2);ctx.fill();}});
+    aP('p3',(ctx,w,h,t)=>{ctx.fillStyle='#04111e';ctx.fillRect(0,0,w,h);for(let i=0;i<35;i++){const sx=(i*37)%w,sy=(i*53)%h*.5,r=0.5+Math.sin(t+i)*.3;ctx.beginPath();ctx.arc(sx,sy,r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${0.3+Math.abs(Math.sin(t*.5+i))*.5})`;ctx.fill();}const gcx=w*.5,gcy=h*.42,gr=h*.28;ctx.beginPath();ctx.arc(gcx,gcy,gr,0,Math.PI*2);ctx.fillStyle='#0a3d6b';ctx.fill();const ports=[[.12,.78],[.88,.72],[.5,.88],[.2,.35],[.8,.3]];ports.forEach(([px,py],i)=>{const next=ports[(i+1)%ports.length],pulse=0.5+0.5*Math.sin(t*2+i);ctx.beginPath();ctx.arc(px*w,py*h,4+pulse*2,0,Math.PI*2);ctx.fillStyle=`rgba(245,201,107,${0.7+pulse*.3})`;ctx.fill();const progress=(t*.3+i*.2)%1,midX=(px+next[0])/2*w,midY=Math.min(py,next[1])*h-36;ctx.beginPath();ctx.moveTo(px*w,py*h);ctx.quadraticCurveTo(midX,midY,next[0]*w,next[1]*h);ctx.strokeStyle='rgba(200,134,10,0.2)';ctx.lineWidth=1;ctx.setLineDash([4,6]);ctx.stroke();ctx.setLineDash([]);const mx=px*w+(next[0]*w-px*w)*progress,my=py*h+(next[1]*h-py*h)*progress-(Math.sin(progress*Math.PI))*36;ctx.beginPath();ctx.arc(mx,my,3,0,Math.PI*2);ctx.fillStyle='#f5c96b';ctx.fill();});});
+
+   
+  </script>
+</body>
+</html>

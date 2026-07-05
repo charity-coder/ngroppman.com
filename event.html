@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events & News - NGROPPMAN</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --g: #1a6b3a; --gd: #124d2b; --au: #C8860A; --al: #F5C96B;
+      --ink: #1A1208; --earth: #3D2B0A;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f8f9f8;
+      color: var(--ink);
+      line-height: 1.6;
+    }
+    .header {
+      background: linear-gradient(var(--g), var(--gd));
+      color: white;
+      padding: 25px 0;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .header h1 { font-family:'Fraunces',serif; font-size:clamp(1.6rem,4vw,2.4rem); }
+    .header p { opacity:.85; margin-top:6px; font-size:clamp(.85rem,2vw,1rem); }
+
+    .section-inner { max-width: 1280px; margin: 0 auto; padding: 40px 20px; }
+    .section-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--earth);
+      text-align:center;
+      margin-bottom: 12px;
+    }
+    .section-label {
+      color: var(--au); font-weight:700; letter-spacing:3px;
+      text-transform:uppercase; text-align:center; display:block;
+      margin-bottom:8px;
+    }
+
+    /* Weather Bar */
+    .weather-bar {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px 0 30px;
+    }
+    .weather-card {
+      background: white;
+      border-radius: 12px;
+      padding: 14px 20px;
+      box-shadow: 0 4px 14px rgba(26,107,58,0.1);
+      text-align: center;
+      font-size: 14px;
+      min-width: 140px;
+      border-top: 3px solid var(--g);
+    }
+    .weather-card strong { color: var(--earth); }
+
+    .tabs { display:flex; justify-content:center; gap:12px; margin:35px 0 25px; flex-wrap:wrap; }
+    .tab-btn {
+      padding: 14px 34px; background:white; border:2px solid var(--g);
+      color:var(--g); border-radius:50px; font-weight:600;
+      cursor:pointer; transition:all 0.3s ease; font-size:15px;
+    }
+    .tab-btn.active { background:var(--g); color:white; transform:scale(1.05); }
+
+    /* News Controls */
+    #newsControls {
+      display: none;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    #newsControls button {
+      padding: 10px 22px; background: white; border: 2px solid var(--g);
+      color: var(--g); border-radius: 50px; font-weight: 600;
+      cursor: pointer; transition: all .3s; font-size: 14px;
+    }
+    #newsControls button.active,
+    #newsControls button:hover { background: var(--g); color: white; }
+
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 28px;
+    }
+    .event-card {
+      background: white; border-radius: 16px; overflow:hidden;
+      box-shadow: 0 10px 30px rgba(26,107,58,0.12);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+    }
+    .event-card:hover { transform: translateY(-10px); box-shadow: 0 25px 50px rgba(26,107,58,0.22); }
+    .event-card > img { width:100%; height:220px; object-fit:cover; transition: transform 0.6s ease; }
+    .event-card:hover > img { transform: scale(1.06); }
+
+    .video-badge {
+      position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.7);
+      color:white; padding:4px 10px; border-radius:12px; font-size:12px;
+    }
+    .closed-badge {
+      position:absolute; top:12px; left:12px; background:rgba(192,57,43,0.9);
+      color:white; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:700;
+    }
+    .event-info { padding: 22px; }
+    .event-date { color: var(--au); font-weight: 700; font-size: 13px; text-transform:uppercase; }
+    .event-title { font-family: 'Fraunces', serif; font-size: 1.35rem; color: var(--earth); margin: 10px 0 8px; line-height: 1.25; }
+
+    .register-btn {
+      background: var(--au); color: white; border: none;
+      padding: 12px 22px; border-radius: 50px; font-weight: 700;
+      cursor: pointer; transition: all 0.3s; font-size:14px;
+    }
+    .register-btn:hover { background: #b07208; transform: translateY(-2px); }
+
+    .register-btn-closed {
+      background: #999; color: white; border: none;
+      padding: 12px 22px; border-radius: 50px; font-weight: 700;
+      cursor: not-allowed; font-size:14px;
+    }
+
+    /* News cards */
+    .news-card {
+      background: white; border-radius: 16px; overflow:hidden;
+      box-shadow: 0 10px 30px rgba(26,107,58,0.1);
+      cursor: pointer; transition: all .35s;
+    }
+    .news-card:hover { transform: translateY(-8px); box-shadow: 0 22px 44px rgba(26,107,58,0.2); }
+    .news-card img { width:100%; height:180px; object-fit:cover; }
+    .news-info { padding: 20px; }
+    .news-date { color: var(--au); font-weight:700; font-size:13px; text-transform:uppercase; }
+    .news-title { font-family:'Fraunces',serif; font-size:1.15rem; color:var(--earth); margin:8px 0 6px; line-height:1.3; }
+    .news-source { font-size:12px; color:#888; }
+
+    /* Loading state */
+    .loading { grid-column: 1/-1; text-align:center; padding: 60px 20px; color:var(--g); }
+    .spinner {
+      width:48px; height:48px; border:4px solid #e0ede7;
+      border-top-color: var(--g); border-radius:50%;
+      animation: spin .8s linear infinite; margin:0 auto 16px;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* Carousel */
+    .carousel-container {
+      position: relative;
+      max-width: 900px;
+      margin: 30px auto;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      height: 360px;
+    }
+    .carousel-slide {
+      display: flex;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      height: 100%;
+    }
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(26,107,58,0.8);
+      color: white;
+      border: none;
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      font-size: 26px;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.3s;
+    }
+    .carousel-btn:hover { background: var(--g); transform: translateY(-50%) scale(1.1); }
+    .prev { left: 15px; }
+    .next { right: 15px; }
+    .carousel-dots {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+    .dot {
+      width: 11px; height: 11px;
+      background: rgba(255,255,255,0.65);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .dot.active { background: var(--au); transform: scale(1.4); }
+
+    /* Gallery */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .gallery-grid img {
+      width:100%; height:220px; object-fit:cover; border-radius:12px;
+      cursor:pointer; transition:transform 0.4s;
+    }
+    .gallery-grid img:hover { transform: scale(1.04); }
+
+    .upload-section {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      border: 2px dashed #ccc;
+      transition: all 0.3s;
+      cursor: pointer;
+      grid-column: 1 / -1;
+    }
+    .upload-section.dragover { border-color: var(--g); background: #f0f8f4; }
+
+    /* Modal */
+    .modal {
+      display: none; position: fixed; top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,0,0.82);
+      z-index: 3000; align-items: center; justify-content: center;
+    }
+    .modal.open { display:flex; }
+    .modal-content {
+      background: white; max-width: 780px; width: 92%;
+      border-radius: 20px; max-height: 92vh; overflow: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .modal-video { width:100%; aspect-ratio:16/9; background:#000; }
+
+    /* Admin */
+    .admin-form {
+      background:white; padding:30px; border-radius:16px;
+      margin:40px 0; box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    }
+    .admin-form input, .admin-form textarea {
+      width:100%; padding:12px; margin-bottom:12px;
+      border-radius:8px; border:1px solid #ddd; font-size:15px;
+      font-family:'DM Sans',sans-serif;
+    }
+    .admin-form label { display:block; margin-bottom:4px; font-weight:600; color:var(--earth); }
+    .preview-img { max-width:100%; max-height:200px; border-radius:8px; margin:10px 0; display:block; }
+
+    /* Ad Popup */
+    #adPopup {
+      display: none;
+      position: fixed;
+      top:50%; left:50%;
+      transform: translate(-50%,-50%);
+      background: white;
+      padding: 28px;
+      border-radius: 20px;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+      z-index: 4000;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+    #adOverlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,.5); z-index:3999;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      display: none; position:fixed; top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,0,0.92);
+      z-index: 5000;
+      align-items: center; justify-content: center;
+    }
+    .lightbox.open { display:flex; }
+    .lightbox img { max-width:90%; max-height:90%; border-radius:12px; }
+    .lightbox-close {
+      position:absolute; top:20px; right:28px;
+      color:white; font-size:40px; cursor:pointer; line-height:1;
+    }
+
+    @media(max-width:600px) {
+      .events-grid { grid-template-columns:1fr; }
+      .tab-btn { padding:12px 20px; font-size:14px; }
+      .carousel-container { height:220px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>NGROPPMAN Events &amp; News</h1>
+  <p>National Groundnuts Producers, Processors &amp; Marketers Association of Nigeria</p>
+</div>
+
+<div class="section-inner">
+  <span class="section-label">Knowledge Hub</span>
+  <h2 class="section-title">Events, News &amp; Opportunities</h2>
+
+  <!-- Weather Bar -->
+  <div class="weather-bar" id="weatherBar">
+    <div class="weather-card"><strong>Loading weather…</strong></div>
+  </div>
+
+  <!-- Carousel -->
+  <div class="carousel-container">
+    <div class="carousel-slide" id="carouselSlide"></div>
+    <button class="carousel-btn prev" onclick="prevSlide()">&#8249;</button>
+    <button class="carousel-btn next" onclick="nextSlide()">&#8250;</button>
+    <div class="carousel-dots" id="carouselDots"></div>
+  </div>
+  <p style="color:var(--g); margin-top:10px; font-style:italic; text-align:center;">🌱 Groundnut Value Chain Gallery</p>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="upcoming">Upcoming Events</button>
+    <button class="tab-btn" data-tab="past">Past Events Gallery</button>
+    <button class="tab-btn" data-tab="news">Latest News</button>
+  </div>
+
+  <!-- News Filter Controls -->
+  <div id="newsControls"></div>
+
+  <!-- Main Grid -->
+  <div class="events-grid" id="eventsGrid"></div>
+
+  <!-- Admin Panel -->
+  <div class="admin-form" id="adminSection">
+    <h3 style="color:var(--earth); margin-bottom:16px;">🔐 Admin Panel</h3>
+    <button onclick="checkAdminAccess()" style="background:var(--g); color:white; padding:14px 32px; border:none; border-radius:50px; font-weight:700; cursor:pointer;">
+      Unlock Admin Features
+    </button>
+  </div>
+</div>
+
+<!-- Event Modal -->
+<div class="modal" id="eventModal">
+  <div class="modal-content">
+    <div style="padding:20px 26px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+      <h3 id="modalTitle" style="color:var(--earth); margin:0; font-family:'Fraunces',serif;"></h3>
+      <span onclick="closeModal()" style="font-size:32px; cursor:pointer; color:#aaa; line-height:1;">×</span>
+    </div>
+    <div id="modalBody" style="padding:26px;"></div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightboxModal" onclick="if(event.target===this)closeLightbox()">
+  <span class="lightbox-close" onclick="closeLightbox()">×</span>
+  <img id="lightboxImage" src="" alt="Gallery image">
+</div>
+
+<!-- Ad Popup -->
+ <!-- Logo -->
+<div id="adPopup">
+  <h3 style="color:var(--au); font-family:'Fraunces',serif; margin-bottom:12px;">Welcome to NGROPPMAN</h3>
+  <p style="color:#555; margin-bottom:16px;">Empowering groundnut value chain actors across Nigeria.</p>
+  <button onclick="closeAd()" style="background:var(--g); color:white; padding:12px 36px; border:none; border-radius:50px; font-weight:700; cursor:pointer; font-size:15px;">
+    Explore Events
+  </button>
+</div>
+
+<script>
+// ================== STATE ==================
+let eventsDB = [];
+let galleryImages = [];
+const ADMIN_PASSWORD = "ngroppman@2026";
+let isAdminUnlocked = false;
+let currentImageData = null;
+let currentNewsFilter = 'All';
+let newsRefreshInterval = null;
+let currentSlide = 0;
+
+const carouselImages = [
+  "groundnut nut.jpg",
+  "We are producing quality peanuts & serving with perfection.jpg",
+  "imsogabriel-stock-I3lUzy2CSik-unsplash.jpg",
+  "gowtham-agm-X_YBLZrjH0U-unsplash.jpg",
+  "seval-torun-OH8xbnh6BJE-unsplash.jpg"
+];
+
+const newsKeywords = {
+  'All': 'agriculture+OR+groundnut+OR+farming+Nigeria',
+  'Groundnut': 'groundnut+OR+peanut+Nigeria',
+  'Agriculture': 'agriculture+OR+farming+Nigeria',
+  'Oil': 'oil+OR+processing+Nigeria',
+  'Export': 'export+OR+trade+Nigeria',
+  'Farming': 'farming+OR+farmer+Nigeria'
+};
+
+// ================== CAROUSEL ==================
+function createCarousel() {
+  const slideContainer = document.getElementById('carouselSlide');
+  const dotsContainer = document.getElementById('carouselDots');
+  slideContainer.innerHTML = '';
+  dotsContainer.innerHTML = '';
+
+  carouselImages.forEach((src, i) => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = `Groundnut field ${i + 1}`;
+    slideContainer.appendChild(img);
+
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+  });
+}
+
+function updateCarousel() {
+  document.getElementById('carouselSlide').style.transform = `translateX(-${currentSlide * 100}%)`;
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+}
+
+function nextSlide() {
+  currentSlide = (currentSlide + 1) % carouselImages.length;
+  updateCarousel();
+}
+
+function prevSlide() {
+  currentSlide = (currentSlide - 1 + carouselImages.length) % carouselImages.length;
+  updateCarousel();
+}
+
+function goToSlide(i) {
+  currentSlide = i;
+  updateCarousel();
+}
+
+// ================== REGISTRATION STATUS ==================
+// An event object can carry an explicit `regCloseDate` (ISO string,
+// e.g. "2026-10-16T23:59:00") to control exactly when registration closes.
+// If it's missing, we fall back to parsing the human-readable `date` field.
+// If neither can be parsed, registration is treated as open (fail-open,
+// so a bad date string never silently locks out a real event).
+function isRegistrationClosed(ev) {
+  const raw = ev.regCloseDate || ev.date;
+  const parsed = new Date(raw);
+  if (isNaN(parsed.getTime())) return false;
+  return Date.now() > parsed.getTime();
+}
+
+// ================== EVENTS ==================
+function loadEvents() {
+  const saved = localStorage.getItem('ngroppmanEvents');
+  if (saved) {
+    eventsDB = JSON.parse(saved);
+  } else {
+    eventsDB = [
+      {
+        id: 1, type: "upcoming",
+        title: "Nigeria Groundnut Revival Programme Launch",
+        date: "16 October 2026", location: "Abuja",
+        regCloseDate: "2026-10-16T23:59:00",
+        image: "ind/gowtham-agm-X_YBLZrjH0U-unsplash.jpg",
+        video: "https://www.instagram.com/reel/DJ4ajEzoauQ/?utm_source=ig_web_copy_link&igsh=NTc4MTIwNjQ2YQ==",
+        desc: "Official launch of the national groundnut revival programme.",
+        fullDesc: "National stakeholder gathering to kick off the Nigeria Groundnut Revival Programme, bringing together farmers, processors, marketers, and government officials."
+      },
+      {
+        id: 2, type: "upcoming",
+        title: "Groundnut Oil Processing Training",
+        date: "5 July 2026", location: "Kano",
+        regCloseDate: "2026-07-05T23:59:00",
+        image: "milling factory.jpg",
+        video: "proc.mp4",
+        desc: "Hands-on training in modern oil extraction techniques.",
+        fullDesc: "A comprehensive workshop covering modern techniques in groundnut oil extraction, quality control, and packaging for small and medium enterprises."
+      }
+    ];
+    saveEvents();
+  }
+}
+
+function saveEvents() {
+  localStorage.setItem('ngroppmanEvents', JSON.stringify(eventsDB));
+}
+
+function renderEvents(list) {
+  const grid = document.getElementById('eventsGrid');
+  grid.innerHTML = '';
+
+  if (!list.length) {
+    grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:60px; color:#888;">No events found.</p>';
+    return;
+  }
+
+  list.forEach(ev => {
+    const closed = isRegistrationClosed(ev);
+    const hasVideo = ev.video ? '<div class="video-badge">📹 Video</div>' : '';
+    const closedBadge = closed ? '<div class="closed-badge">Registration Closed</div>' : '';
+    const regButton = closed
+      ? `<button class="register-btn-closed" style="flex:1;" disabled title="Registration has closed">Registration Closed</button>`
+      : `<button class="register-btn" style="flex:1;" onclick="event.stopPropagation(); registerEvent(${ev.id});">Register</button>`;
+
+    const card = document.createElement('div');
+    card.className = 'event-card';
+    card.onclick = () => showEventModal(ev.id);
+    card.innerHTML = `
+      ${hasVideo}
+      ${closedBadge}
+      <img src="${ev.image}" alt="${ev.title}" onerror="this.src='peanut bulter.jpg'">
+      <div class="event-info">
+        <div class="event-date">${ev.date}</div>
+        <div class="event-title">${ev.title}</div>
+        <p style="color:#555; font-size:14px; margin:4px 0;">📍 ${ev.location}</p>
+        <p style="margin:12px 0 18px; font-size:14px; color:#444;">${ev.desc}</p>
+        <div style="display:flex; gap:8px;">
+          ${regButton}
+          <button onclick="event.stopPropagation(); addToCalendar(${ev.id});" style="flex:1; background:var(--g); color:white; border:none; border-radius:50px; font-weight:600; padding:12px; cursor:pointer; font-size:14px;">📅 Calendar</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ================== GALLERY ==================
+function loadGallery() {
+  const saved = localStorage.getItem('ngroppmanGallery');
+  galleryImages = saved ? JSON.parse(saved) : [
+    "organic gnuts.jpeg",
+    "oil millers.jpg",
+    "imsogabriel-stock-I3lUzy2CSik-unsplash.jpg",
+    "seval-torun-OH8xbnh6BJE-unsplash.jpg"
+  ];
+}
+
+function renderGallery() {
+  const grid = document.getElementById('eventsGrid');
+  grid.innerHTML = '';
+
+  // Upload area
+  const uploadDiv = document.createElement('div');
+  uploadDiv.className = 'upload-section';
+  uploadDiv.id = 'dropZone';
+  uploadDiv.innerHTML = `
+    <h3 style="color:var(--earth); margin-bottom:8px;">📸 Upload Past Event Photos</h3>
+    <p style="color:#666; margin-bottom:12px;">Drag & drop or click to select — max 5MB per image</p>
+    <input type="file" id="galleryUpload" accept="image/*" style="display:none;">
+    <div id="galleryPreview"></div>
+  `;
+  grid.appendChild(uploadDiv);
+
+  // Gallery images
+  const galleryDiv = document.createElement('div');
+  galleryDiv.className = 'gallery-grid';
+  galleryDiv.style.cssText = 'grid-column:1/-1;';
+  galleryImages.forEach((src, i) => {
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'relative';
+    wrapper.innerHTML = `
+      <img src="${src}" alt="Gallery image ${i+1}" onclick="showLightbox('${src}')">
+      <button onclick="deleteGalleryImage(${i}); event.stopPropagation();"
+        style="position:absolute; top:8px; right:8px; background:#c0392b; color:white; border:none; width:28px; height:28px; border-radius:50%; font-size:16px; cursor:pointer; line-height:1;">×</button>
+    `;
+    galleryDiv.appendChild(wrapper);
+  });
+  grid.appendChild(galleryDiv);
+
+  setupDragAndDrop();
+}
+
+function setupDragAndDrop() {
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('galleryUpload');
+  if (!dropZone || !fileInput) return;
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    handleGalleryFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', e => handleGalleryFile(e.target.files[0]));
+}
+
+function handleGalleryFile(file) {
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { alert("File too large! Max 5MB."); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    galleryImages.unshift(ev.target.result);
+    localStorage.setItem('ngroppmanGallery', JSON.stringify(galleryImages));
+    alert("✅ Image uploaded successfully!");
+    renderGallery();
+  };
+  reader.readAsDataURL(file);
+}
+
+function deleteGalleryImage(index) {
+  if (!confirm("Delete this image?")) return;
+  galleryImages.splice(index, 1);
+  localStorage.setItem('ngroppmanGallery', JSON.stringify(galleryImages));
+  renderGallery();
+}
+
+function showLightbox(src) {
+  document.getElementById('lightboxImage').src = src;
+  document.getElementById('lightboxModal').classList.add('open');
+}
+
+function closeLightbox() {
+  document.getElementById('lightboxModal').classList.remove('open');
+}
+
+// ================== MODALS ==================
+function showEventModal(id) {
+  const ev = eventsDB.find(e => e.id === id);
+  if (!ev) return;
+
+  let videoHTML = '';
+  if (ev.video) {
+    if (ev.video.includes('youtube.com') || ev.video.includes('youtu.be')) {
+      videoHTML = `<iframe class="modal-video" src="${ev.video}" frameborder="0" allowfullscreen></iframe>`;
+    } else {
+      videoHTML = `<video class="modal-video" controls><source src="${ev.video}" type="video/mp4"></video>`;
+    }
+  }
+
+  const closed = isRegistrationClosed(ev);
+  const regButton = closed
+    ? `<button class="register-btn-closed" style="flex:1;" disabled title="Registration has closed">Registration Closed</button>`
+    : `<button onclick="registerEvent(${ev.id});" class="register-btn" style="flex:1;">Register Now</button>`;
+  const closedNotice = closed
+    ? `<p style="margin-top:10px; color:#c0392b; font-weight:600;">⛔ Registration for this event closed on ${new Date(ev.regCloseDate || ev.date).toLocaleString('en-NG', {dateStyle:'medium', timeStyle:'short'})}.</p>`
+    : '';
+
+  const deleteBtn = isAdminUnlocked
+    ? `<button onclick="deleteEvent(${ev.id});" style="flex:1; background:#c0392b; color:white; padding:12px; border:none; border-radius:50px; font-weight:600; cursor:pointer;">🗑️ Delete</button>`
+    : '';
+
+  document.getElementById('modalTitle').textContent = ev.title;
+  document.getElementById('modalBody').innerHTML = `
+    ${videoHTML}
+    <img src="${ev.image}" style="width:100%; border-radius:12px; margin:20px 0;" alt="${ev.title}" onerror="this.style.display='none'">
+    <p style="margin-bottom:6px;"><strong>📅 Date:</strong> ${ev.date}</p>
+    <p style="margin-bottom:14px;"><strong>📍 Location:</strong> ${ev.location}</p>
+    <div style="line-height:1.8; color:#444;">${ev.fullDesc || ev.desc}</div>
+    ${closedNotice}
+    <div style="margin-top:24px; display:flex; gap:10px; flex-wrap:wrap;">
+      ${regButton}
+      <button onclick="addToCalendar(${ev.id});" style="flex:1; background:var(--g); color:white; padding:12px; border:none; border-radius:50px; font-weight:600; cursor:pointer;">📅 Add to Calendar</button>
+      ${deleteBtn}
+    </div>`;
+  document.getElementById('eventModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('eventModal').classList.remove('open');
+}
+
+// Close modal on backdrop click
+document.getElementById('eventModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ================== ADMIN ==================
+function checkAdminAccess() {
+  const pass = prompt("Enter Admin Password:");
+  if (pass === ADMIN_PASSWORD) {
+    isAdminUnlocked = true;
+    document.getElementById('adminSection').innerHTML = `
+      <h3 style="color:var(--earth); margin-bottom:20px; font-family:'Fraunces',serif;">➕ Add New Event</h3>
+      <label>Event Title *</label>
+      <input type="text" id="newTitle" placeholder="e.g. Annual Groundnut Farmers Forum">
+      <label>Date (display text)</label>
+      <input type="text" id="newDate" placeholder="e.g. 16 October 2026">
+      <label>Registration Closes (exact date &amp; time)</label>
+      <input type="datetime-local" id="newRegClose">
+      <label>Location</label>
+      <input type="text" id="newLocation" placeholder="e.g. Abuja">
+      <label>Description</label>
+      <textarea id="newDesc" placeholder="Event description…" rows="3" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; font-family:'DM Sans',sans-serif; resize:vertical; margin-bottom:12px;"></textarea>
+      <label>Event Image (optional)</label>
+      <input type="file" id="imageUpload" accept="image/*" style="margin:6px 0 12px;">
+      <div id="imagePreview"></div>
+      <label>Video URL (optional)</label>
+      <input type="text" id="newVideo" placeholder="YouTube embed URL or mp4 link">
+      <button onclick="addNewEvent()" style="background:var(--g); color:white; padding:14px 36px; border:none; border-radius:50px; font-weight:700; cursor:pointer; margin-top:8px;">
+        ✅ Save Event
+      </button>`;
+    document.getElementById('imageUpload').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        currentImageData = ev.target.result;
+        document.getElementById('imagePreview').innerHTML = `<img src="${currentImageData}" class="preview-img">`;
+      };
+      reader.readAsDataURL(file);
+    });
+  } else {
+    alert("❌ Incorrect password.");
+  }
+}
+
+function addNewEvent() {
+  if (!isAdminUnlocked) return;
+  const title = document.getElementById('newTitle').value.trim();
+  if (!title) { alert("Event title is required."); return; }
+
+  const regCloseInput = document.getElementById('newRegClose').value; // "YYYY-MM-DDTHH:MM"
+
+  const newEv = {
+    id: Date.now(),
+    type: "upcoming",
+    title,
+    date: document.getElementById('newDate').value.trim() || "Date TBA",
+    regCloseDate: regCloseInput || null,
+    location: document.getElementById('newLocation').value.trim() || "Nigeria",
+    desc: document.getElementById('newDesc').value.trim() || "New event.",
+    fullDesc: document.getElementById('newDesc').value.trim() || "New event.",
+    image: currentImageData || `https://picsum.photos/id/${Math.floor(Math.random()*900)+100}/800/500`,
+    video: document.getElementById('newVideo').value.trim()
+  };
+
+  eventsDB.unshift(newEv);
+  saveEvents();
+  currentImageData = null;
+  alert("✅ Event added successfully!");
+  renderEvents(eventsDB.filter(e => e.type === "upcoming"));
+  // Reset form fields
+  ['newTitle','newDate','newRegClose','newLocation','newDesc','newVideo'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('imagePreview').innerHTML = '';
+}
+
+function deleteEvent(id) {
+  if (!confirm("Permanently delete this event?")) return;
+  eventsDB = eventsDB.filter(e => e.id !== id);
+  saveEvents();
+  closeModal();
+  renderEvents(eventsDB.filter(e => e.type === "upcoming"));
+}
+
+// ================== REGISTER & CALENDAR ==================
+function registerEvent(id) {
+  const ev = eventsDB.find(e => e.id === id);
+  if (ev && isRegistrationClosed(ev)) {
+    alert("Registration for this event has closed.");
+    return;
+  }
+  window.open('https://script.google.com/macros/s/AKfycbzAKwoaIboFCBFGffZkuH5PROyq7KS2VDOK-yNWleL2eRk4xFeD0bsFcw1NHvphHNA/exec', '_blank');
+}
+
+function addToCalendar(id) {
+  const ev = eventsDB.find(e => e.id === id);
+  if (!ev) return;
+  const ics = [
+    'BEGIN:VCALENDAR', 'VERSION:2.0',
+    'BEGIN:VEVENT',
+    `SUMMARY:${ev.title}`,
+    `DESCRIPTION:${(ev.fullDesc || ev.desc).replace(/\n/g, '\\n')}`,
+    'DTSTART:20261016T090000Z',
+    'DTEND:20261016T170000Z',
+    `LOCATION:${ev.location}`,
+    'END:VEVENT', 'END:VCALENDAR'
+  ].join('\n');
+  const blob = new Blob([ics], { type: 'text/calendar' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `${ev.title.replace(/\s+/g,'_')}.ics`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ================== WEATHER ==================
+async function loadWeather() {
+  const cities = [
+    { name: "Abuja", lat: 9.0765, lon: 7.3986 },
+    { name: "Kano", lat: 12.0022, lon: 8.5919 },
+    { name: "Lagos", lat: 6.5244, lon: 3.3792 }
+  ];
+  const bar = document.getElementById('weatherBar');
+  bar.innerHTML = '';
+
+  const weatherDesc = code => {
+    if (code === 0) return '☀️ Clear';
+    if (code <= 2) return '⛅ Partly Cloudy';
+    if (code <= 48) return '☁️ Cloudy';
+    if (code <= 67) return '🌧️ Rain';
+    return '⛈️ Stormy';
+  };
+
+  for (const city of cities) {
+    try {
+      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current_weather=true&timezone=Africa/Lagos`);
+      const data = await res.json();
+      const w = data.current_weather;
+      const card = document.createElement('div');
+      card.className = 'weather-card';
+      card.innerHTML = `<strong>${city.name}</strong><br>${Math.round(w.temperature)}°C &nbsp;${weatherDesc(w.weathercode)}<br><small style="color:#888;">Wind: ${w.windspeed} km/h</small>`;
+      bar.appendChild(card);
+    } catch {
+      const card = document.createElement('div');
+      card.className = 'weather-card';
+      card.innerHTML = `<strong>${city.name}</strong><br><small style="color:#aaa;">Unavailable</small>`;
+      bar.appendChild(card);
+    }
+  }
+}
+
+// ================== NEWS ==================
+async function fetchAgricultureNews(filter) {
+  const grid = document.getElementById('eventsGrid');
+  grid.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading latest agriculture news…</p></div>';
+
+  const query = newsKeywords[filter] || newsKeywords['All'];
+  try {
+    const rssUrl = encodeURIComponent(`https://news.google.com/rss/search?q=${query}&hl=en-NG&gl=NG&ceid=NG:en`);
+    const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}&count=12`);
+    const data = await res.json();
+
+    grid.innerHTML = '';
+    const items = data.items || [];
+    if (!items.length) {
+      grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:60px; color:#888;">No news articles found.</p>';
+      return;
+    }
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'news-card';
+      card.onclick = () => window.open(item.link, '_blank');
+      card.innerHTML = `
+        ${item.thumbnail ? `<img src="${item.thumbnail}" alt="${item.title}" onerror="this.style.display='none'">` : ''}
+        <div class="news-info">
+          <div class="news-date">${new Date(item.pubDate).toLocaleDateString('en-NG', {year:'numeric',month:'short',day:'numeric'})}</div>
+          <div class="news-title">${item.title}</div>
+          <div class="news-source">${item.author || 'Google News'}</div>
+          <p style="margin-top:10px; font-size:14px; color:#555;">${item.description ? item.description.replace(/<[^>]+>/g,'').substring(0,150) + '…' : ''}</p>
+        </div>`;
+      grid.appendChild(card);
+    });
+  } catch {
+    grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:60px; color:#c0392b;">Failed to load news. Please try again.</p>';
+  }
+}
+
+function createNewsFilters() {
+  const controls = document.getElementById('newsControls');
+  controls.style.display = 'flex';
+  controls.innerHTML = ['All','Groundnut','Agriculture','Oil','Export','Farming'].map(f =>
+    `<button onclick="applyNewsFilter('${f}')" class="${f === currentNewsFilter ? 'active' : ''}">${f === 'Oil' ? 'Oil & Processing' : f}</button>`
+  ).join('') +
+  `<button onclick="fetchAgricultureNews(currentNewsFilter)" style="background:var(--g); color:white;">🔄 Refresh</button>`;
+}
+
+function applyNewsFilter(filter) {
+  currentNewsFilter = filter;
+  createNewsFilters();
+  fetchAgricultureNews(filter);
+}
+
+function startNewsAutoRefresh() {
+  if (newsRefreshInterval) clearInterval(newsRefreshInterval);
+  newsRefreshInterval = setInterval(() => fetchAgricultureNews(currentNewsFilter), 300000);
+}
+
+// ================== TABS ==================
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const tab = btn.dataset.tab;
+    const controls = document.getElementById('newsControls');
+
+    if (tab === 'news') {
+      createNewsFilters();
+      fetchAgricultureNews(currentNewsFilter);
+      startNewsAutoRefresh();
+    } else {
+      controls.style.display = 'none';
+      controls.innerHTML = '';
+      if (newsRefreshInterval) { clearInterval(newsRefreshInterval); newsRefreshInterval = null; }
+      if (tab === 'past') renderGallery();
+      else renderEvents(eventsDB.filter(e => e.type === tab));
+    }
+  });
+});
+
+// ================== AD POPUP ==================
+function closeAd() {
+  document.getElementById('adPopup').style.display = 'none';
+  document.getElementById('adOverlay').style.display = 'none';
+}
+
+// ================== INIT ==================
+window.addEventListener('load', () => {
+  loadEvents();
+  loadGallery();
+  createCarousel();
+  setInterval(nextSlide, 4000);
+  renderEvents(eventsDB.filter(e => e.type === "upcoming"));
+  loadWeather();
+  setTimeout(() => {
+    document.getElementById('adPopup').style.display = 'block';
+    document.getElementById('adOverlay').style.display = 'block';
+  }, 3500);
+
+  // Re-check registration status every minute so cards flip to
+  // "Registration Closed" live without needing a page refresh.
+  setInterval(() => {
+    const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+    if (activeTab === 'upcoming') {
+      renderEvents(eventsDB.filter(e => e.type === "upcoming"));
+    }
+  }, 60000);
+});
+</script>
+</body>
+</html>

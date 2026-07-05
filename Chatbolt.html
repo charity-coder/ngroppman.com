@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NGROPPMAN AI — Groundnut Farming Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --soil:#2E2115;
+  --soil-2:#3E2C1B;
+  --peanut:#C6905A;
+  --peanut-light:#E8C9A0;
+  --leaf:#4C7A3D;
+  --leaf-dark:#375A2C;
+  --cream:#F6EEDF;
+  --cream-2:#EFE3CB;
+  --sun:#E2A23B;
+  --ink:#241A11;
+  --ink-soft:#5A4A38;
+  --white:#FFFDF8;
+  --danger:#B4472F;
+  --radius-pod: 42% 58% 61% 39% / 46% 40% 60% 54%;
+  --shadow: 0 12px 32px rgba(46,33,21,0.18);
+  --shadow-sm: 0 4px 14px rgba(46,33,21,0.14);
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Work Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --cream-a: rgba(246,238,223,0.93);
+  --cream-2-a: rgba(239,227,203,0.93);
+}
+[data-theme="dark"]{
+  --cream:#221810;
+  --cream-2:#2A1E13;
+  --white:#2A1E13;
+  --ink:#F3E7D4;
+  --ink-soft:#CBB79C;
+  --soil:#150F0A;
+  --shadow: 0 12px 32px rgba(0,0,0,0.45);
+  --cream-a: rgba(34,24,16,0.88);
+  --cream-2-a: rgba(42,30,19,0.88);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family: var(--font-body);
+  color: var(--ink);
+  background-image:
+    linear-gradient(var(--cream-a), var(--cream-a)),
+    url('https://images.unsplash.com/photo-1549978113-29eb25c8177f?fm=jpg&q=70&w=2400&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  transition: background-color .35s ease, color .35s ease;
+  overflow-x:hidden;
+}
+@media (max-width:760px){
+  body{ background-attachment: scroll; }
+}
+img{max-width:100%; display:block;}
+a{color:inherit;}
+button{font-family:inherit; cursor:pointer;}
+::selection{background:var(--sun); color:var(--ink);}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+}
+
+/* ============ FURROW TEXTURE ============ */
+.furrow-bg{
+  background-image: repeating-linear-gradient(
+    100deg,
+    rgba(31,42,31,1.) 0px, rgba(76,122,61,0.06) 2px,
+    transparent 2px, transparent 20px
+  );
+}
+
+/* ============ HEADER ============ */
+header{
+  position: sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 14px 5vw;
+  background: var(--cream-a);
+  border-bottom: 1px solid rgba(46,33,21,0.08);
+  backdrop-filter: blur(10px);
+}
+.brand{display:flex; align-items:center; gap:12px;}
+.brand-mark{
+  width:44px; height:44px; border-radius: var(--radius-pod);
+  background: linear-gradient(135deg, var(--leaf), var(--leaf-dark));
+  display:flex; align-items:center; justify-content:center;
+  color:var(--white); flex-shrink:0; overflow:hidden;
+  box-shadow: var(--shadow-sm), inset -3px -4px 7px rgba(0,0,0,0.28), inset 2px 3px 5px rgba(255,255,255,0.22);
+}
+.brand-mark-img{width:100%; height:100%; object-fit:cover; display:block;}
+.brand-mark svg{width:26px; height:26px;}
+.brand-text{line-height:1.1;}
+.brand-text strong{font-family:var(--font-display); font-size:1.15rem; letter-spacing:0.01em; display:block; font-weight: bolder; color: #2c2c2c;; }
+.brand-text span{font-size:0.68rem; color:#228b22; text-transform:uppercase; letter-spacing:0.08em; font-weight: bold;}
+nav.top-links{display:flex; gap:24px; align-items:center;}
+nav.top-links a{font-size:0.9rem; font-weight:500; text-decoration:none; color:var(--ink-soft); transition:color .2s; white-space:nowrap;}
+nav.top-links a:hover{color:var(--leaf);}
+.header-actions{display:flex; align-items:center; gap:10px;}
+.icon-btn{
+  width:40px; height:40px; border-radius:50%; border:1px solid rgba(46,33,21,0.14);
+  background:var(--white); display:flex; align-items:center; justify-content:center;
+  color:var(--ink); font-size:1.1rem; transition: all .2s;
+}
+.icon-btn:hover{border-color:var(--leaf); color:var(--leaf); transform:translateY(-1px);}
+.menu-toggle{display:none;}
+
+/* ============ HERO ============ */
+.hero{
+  position:relative;
+  padding: 8vh 5vw 10vh;
+  background:
+    linear-gradient(180deg, rgba(30,21,13,0.82), rgba(30,21,13,0.92)),
+    url('https://images.unsplash.com/photo-1739283487615-756b7290f7fb?fm=jpg&q=80&w=2000&auto=format&fit=crop')
+    center 65% / cover no-repeat;
+  color: var(--cream);
+  overflow:hidden;
+}
+.hero::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image: repeating-linear-gradient(
+    115deg, rgba(198,144,90,0.09) 0 2px, transparent 2px 46px
+  );
+  pointer-events:none;
+}
+.hero-inner{
+  position:relative; z-index:2;
+  max-width: 720px;
+}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+ font-size:1.rem; letter-spacing:0.12em; text-transform:uppercase;
+  color: var(--sun); margin-bottom:22px;
+}
+.eyebrow::before{content:"●"; color:var(--leaf); font-size:0.6rem;}
+.hero h1{
+  font-family: var(--font-display);
+  font-weight:600;
+  font-size: clamp(1.5rem, 5vw, 3.6rem);
+  line-height:1.08;
+  letter-spacing:-0.01em;
+}
+.hero h1 em{font-style:italic; color:var(--peanut-light); font-weight:500;}
+.hero p.lead{
+  margin-top:22px; font-size:1.08rem; color:rgba(246,238,223,0.8); max-width:56ch; line-height:1.6;
+}
+.hero-ctas{display:flex; gap:14px; margin-top:34px; flex-wrap:wrap;}
+.btn{
+  border:none; border-radius:999px; padding:14px 26px; font-weight:600; font-size:0.95rem;
+  display:inline-flex; align-items:center; gap:8px; transition: transform .2s, box-shadow .2s, background .2s;
+}
+.btn-primary{background:var(--leaf); color:var(--white); box-shadow: var(--shadow-sm);}
+.btn-primary:hover{transform:translateY(-2px); box-shadow: var(--shadow);}
+.btn-ghost{background:transparent; color:var(--cream); border:1px solid rgba(246,238,223,0.35);}
+.btn-ghost:hover{border-color:var(--sun); color:var(--sun);}
+
+/* 3D pod scene — rendered by Three.js, rotating groundnut pods with real lighting/depth */
+.pod-scene{position:absolute; right:-2%; top:0; width:46%; height:100%; z-index:1; opacity:0.95; touch-action:none;}
+.pod-scene canvas{width:100% !important; height:100% !important; display:block;}
+@media (max-width: 1180px){.pod-scene{width:42%;}}
+@media (max-width: 900px){.pod-scene{width:44%; opacity:0.8;}}
+@media (max-width: 760px){
+  .hero{padding-bottom:6vh;}
+  .pod-scene{position:relative; width:min(260px,68vw); height:200px; margin:32px auto 0; right:auto; top:auto; opacity:1;}
+}
+
+/* ============ QUICK ACCESS ============ */
+.section{padding: 7vh 5vw; background-color: var(--cream-a);}
+.section-head{display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:34px; flex-wrap:wrap; gap:14px;}
+.section-head h2{font-family:var(--font-display); font-size:clamp(1.5rem,3vw,2.1rem); font-weight:600;}
+.section-head p{color:var(--ink-soft); max-width:52ch; margin-top:6px;}
+.quick-grid{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(190px,1fr)); gap:16px;
+  perspective:1400px;
+}
+.quick-card{
+  background: var(--white); border-radius:20px; padding:22px 20px;
+  border:1px solid rgba(46,33,21,0.08);
+  display:flex; flex-direction:column; gap:14px; text-align:left;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s;
+  position:relative; overflow:hidden;
+  transform-style:preserve-3d; will-change:transform;
+}
+.quick-card:hover{box-shadow:var(--shadow); border-color:var(--leaf);}
+.quick-card .qi{
+  width:44px; height:44px; border-radius: var(--radius-pod);
+  display:flex; align-items:center; justify-content:center; font-size:1.3rem;
+  background: var(--cream-2); transform: translateZ(18px);
+  box-shadow: inset -3px -3px 6px rgba(46,33,21,0.14), inset 2px 2px 5px rgba(255,255,255,0.6), 0 6px 10px rgba(46,33,21,0.12);
+}
+.quick-card strong, .quick-card span{transform: translateZ(10px);}
+.quick-card strong{font-family:var(--font-display); font-size:1.02rem; font-weight:600;}
+.quick-card span{font-size:0.82rem; color:var(--ink-soft); line-height:1.4;}
+
+/* ============ CALCULATORS ============ */
+.tools-wrap{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; perspective:1400px;}
+.tool-card{
+  background: var(--soil); color:var(--cream); border-radius:24px; padding:28px;
+  position:relative; overflow:hidden;
+  transform-style:preserve-3d; will-change:transform;
+  transition: box-shadow .25s ease;
+}
+.tool-card:hover{box-shadow:var(--shadow);}
+.tool-card h3{font-family:var(--font-display); font-size:1.25rem; margin-bottom:6px;}
+.tool-card p{color:rgba(246,238,223,0.7); font-size:0.85rem; margin-bottom:18px;}
+.field-row{display:flex; flex-direction:column; gap:6px; margin-bottom:14px;}
+.field-row label{font-size:0.76rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--peanut-light);}
+.field-row input, .field-row select{
+  background: rgba(246,238,223,0.08); border:1px solid rgba(246,238,223,0.2);
+  color:var(--cream); padding:10px 12px; border-radius:10px; font-family:var(--font-mono); font-size:0.92rem;
+}
+.field-row input:focus, .field-row select:focus{outline:2px solid var(--sun); outline-offset:1px;}
+.tool-result{
+  margin-top:16px; padding:14px 16px; background:rgba(226,162,59,0.12); border-radius:12px;
+  border-left:3px solid var(--sun); font-family:var(--font-mono); font-size:0.95rem; min-height:20px;
+}
+.calc-btn{
+  background:var(--sun); color:var(--ink); border:none; padding:11px 20px; border-radius:999px;
+  font-weight:700; font-size:0.88rem; margin-top:4px;
+}
+.calc-btn:hover{filter:brightness(1.06);}
+
+/* ============ FOOTER ============ */
+footer{
+  background: var(--ink); color: var(--cream-2); padding: 6vh 5vw 4vh;
+}
+[data-theme="dark"] footer{background:#0F0B07;}
+.footer-grid{display:grid; grid-template-columns:2fr repeat(3,1fr); gap:32px; margin-bottom:40px;}
+@media (max-width:800px){.footer-grid{grid-template-columns:1fr 1fr;}}
+.footer-grid h4{font-family:var(--font-display); font-size:1rem; margin-bottom:14px; color:var(--peanut-light);font-weight: bolder;}
+.footer-grid ul{list-style:none; color: #ffff; }
+.footer-grid li{margin-bottom:9px; font-size:0.86rem; color:rgba(246,238,223,0.65);}
+.footer-bottom{border-top:1px solid rgba(246,238,223,0.12); padding-top:18px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:0.78rem; color:rgba(246,238,223,0.5);}
+
+/* ============ FLOATING CHAT LAUNCHER ============ */
+.chat-launcher{
+  position:fixed; bottom:26px; right:26px; z-index:200;
+  width:64px; height:64px; border-radius: var(--radius-pod);
+  background: linear-gradient(135deg, var(--leaf), var(--leaf-dark));
+  color:var(--white); border:none;
+  box-shadow: var(--shadow), inset -4px -5px 9px rgba(0,0,0,0.3), inset 3px 4px 7px rgba(255,255,255,0.22);
+  display:flex; align-items:center; justify-content:center; font-size:1.6rem;
+  animation: floatPulse 3.4s ease-in-out infinite;
+  transition: transform .2s ease;
+}
+.chat-launcher:hover{transform:scale(1.08) translateY(-2px);}
+@keyframes floatPulse{
+  0%,100%{ box-shadow: 0 12px 32px rgba(46,33,21,0.18), 0 0 0 0 rgba(76,122,61,0.35);}
+  50%{ box-shadow: 0 12px 32px rgba(46,33,21,0.18), 0 0 0 12px rgba(76,122,61,0);}
+}
+.chat-launcher .badge{
+  position:absolute; top:-4px; right:-4px; background:var(--sun); color:var(--ink);
+  font-size:0.62rem; font-weight:700; border-radius:999px; padding:2px 6px;
+}
+
+/* ============ CHAT WINDOW ============ */
+.chat-window{
+  position:fixed; bottom:26px; right:26px; z-index:250;
+  width:min(400px, 92vw); height:min(660px, 84vh);
+  background:var(--white); border-radius:26px; box-shadow: var(--shadow);
+  display:flex; flex-direction:column; overflow:hidden;
+  transform: translateY(24px) scale(0.96); opacity:0; pointer-events:none;
+  transition: all .28s cubic-bezier(.2,.9,.3,1);
+  border:1px solid rgba(46,33,21,0.08);
+}
+.chat-window.open{transform:translateY(0) scale(1); opacity:1; pointer-events:all;}
+.chat-head{
+  background: var(--soil); color:var(--cream); padding:16px 18px;
+  display:flex; align-items:center; gap:12px;
+}
+.chat-head .avatar{
+  width:38px; height:38px; border-radius:var(--radius-pod);
+  background: linear-gradient(135deg,var(--sun),var(--peanut));
+  display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+  box-shadow: inset -3px -4px 7px rgba(0,0,0,0.28), inset 2px 3px 5px rgba(255,255,255,0.25);
+}
+.chat-head-info{flex:1; line-height:1.2;}
+.chat-head-info strong{font-family:var(--font-display); font-size:0.98rem;}
+.chat-head-info span{font-size:0.72rem; color:rgba(246,238,223,0.6); display:flex; align-items:center; gap:5px;}
+.chat-head-info span::before{content:""; width:6px; height:6px; border-radius:50%; background:#6FCF6F; display:inline-block;}
+.chat-close{background:none; border:none; color:var(--cream); font-size:1.2rem; opacity:0.75;}
+.chat-close:hover{opacity:1;}
+
+.chat-toolbar{
+  display:flex; gap:8px; padding:10px 14px; border-bottom:1px solid rgba(46,33,21,0.08);
+  background: var(--cream-2); overflow-x:auto;
+}
+.chat-toolbar select{
+  border:1px solid rgba(46,33,21,0.15); background:var(--white); color:var(--ink);
+  border-radius:8px; padding:6px 8px; font-size:0.78rem; font-family:var(--font-body);
+}
+.tt-btn{
+  border:1px solid rgba(46,33,21,0.15); background:var(--white); border-radius:8px;
+  padding:6px 9px; font-size:0.78rem; color:var(--ink-soft); display:flex; align-items:center; gap:5px; white-space:nowrap;
+}
+.tt-btn.active{border-color:var(--leaf); color:var(--leaf); background:rgba(76,122,61,0.08);}
+
+.chat-body{
+  flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px;
+  background: var(--cream);
+}
+/* dialogue rows: avatar + bubble, so it reads as a back-and-forth conversation */
+.msg-row{display:flex; align-items:flex-end; gap:8px; max-width:100%;}
+.msg-row.bot{justify-content:flex-start;}
+.msg-row.user{justify-content:flex-end;}
+.msg-avatar{
+  width:26px; height:26px; border-radius:var(--radius-pod); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:0.85rem;
+  background: linear-gradient(135deg,var(--sun),var(--peanut)); margin-bottom:2px;
+  box-shadow: inset -2px -3px 5px rgba(0,0,0,0.28), inset 1px 2px 4px rgba(255,255,255,0.25);
+}
+.msg-row.user .msg-avatar{background:var(--leaf); color:var(--white);}
+.msg{max-width:78%; padding:11px 14px; border-radius:16px; font-size:0.89rem; line-height:1.5; animation: msgIn .25s ease;}
+@keyframes msgIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+.msg.bot{background:var(--white); border:1px solid rgba(46,33,21,0.08); border-bottom-left-radius:4px;}
+.msg.user{background:var(--leaf); color:var(--white); border-bottom-right-radius:4px;}
+.msg.bot .src{display:block; margin-top:8px; font-size:0.68rem; color:var(--ink-soft); font-family:var(--font-mono);}
+.msg img{border-radius:10px; margin-top:8px; max-width:100%;}
+.timestamp{font-size:0.64rem; color:var(--ink-soft); opacity:0.7; margin-top:3px; display:block;}
+.msg-row.user .timestamp{text-align:right;}
+.typing-row{display:flex; align-items:flex-end; gap:8px;}
+.typing{display:flex; gap:4px; padding:12px 14px; background:var(--white); border-radius:16px; border:1px solid rgba(46,33,21,0.08); border-bottom-left-radius:4px;}
+.typing span{width:6px; height:6px; border-radius:50%; background:var(--ink-soft); animation:blink 1.2s infinite;}
+.typing span:nth-child(2){animation-delay:.2s;} .typing span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:.25;} 40%{opacity:1;}}
+
+.quick-replies{display:flex; gap:8px; flex-wrap:wrap; padding:0 16px 10px;}
+.qr-chip{
+  border:1px solid rgba(46,33,21,0.15); background:var(--white); border-radius:999px;
+  padding:7px 13px; font-size:0.78rem; color:var(--ink-soft);
+}
+.qr-chip:hover{border-color:var(--leaf); color:var(--leaf);}
+
+.chat-input-row{
+  padding:12px 14px; border-top:1px solid rgba(46,33,21,0.08); background:var(--white);
+  display:flex; align-items:flex-end; gap:8px;
+}
+.chat-input-row textarea{
+  flex:1; resize:none; border:1px solid rgba(46,33,21,0.15); border-radius:16px; padding:10px 14px;
+  font-family:var(--font-body); font-size:0.88rem; max-height:90px; background:var(--cream); color:var(--ink);
+}
+.chat-input-row textarea:focus{outline:none; border-color:var(--leaf);}
+.round-btn{
+  width:40px; height:40px; border-radius:50%; border:none; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:1.05rem; color:var(--white);
+  background:var(--ink-soft);
+}
+.round-btn.mic{background:var(--peanut);}
+.round-btn.mic.recording{background:var(--danger); animation:recPulse 1s infinite;}
+@keyframes recPulse{0%,100%{box-shadow:0 0 0 0 rgba(180,71,47,0.5);} 50%{box-shadow:0 0 0 8px rgba(180,71,47,0);}}
+.round-btn.send{background:var(--leaf);}
+.round-btn.img{background:var(--sun); color:var(--ink);}
+.round-btn:hover{filter:brightness(1.08);}
+.img-preview{display:flex; align-items:center; gap:8px; padding:0 16px 8px; font-size:0.76rem; color:var(--ink-soft);}
+.img-preview img{width:34px; height:34px; object-fit:cover; border-radius:8px;}
+.img-preview button{background:none; border:none; color:var(--danger); font-size:0.9rem;}
+
+@media (max-width:480px){
+  .chat-window{ bottom:0; right:0; width:100vw; height:100vh; border-radius:0;}
+  .chat-launcher{bottom:18px; right:18px;}
+}
+
+/* Mobile nav */
+@media (max-width: 768px) {
+  .menu-toggle{
+    display:flex;
+  }
+  .top-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--soil);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    z-index: 50;
+    gap: 0;
+  }
+
+  .top-links.open {
+    max-height: 400px;
+    opacity: 1;
+  }
+
+  nav.top-links a {          /* ← was ".top-links a" */
+    color: #FFFDF8;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  header {
+    position: relative;
+  }
+}
+
+/* Desktop: make sure mobile styles don't leak */
+@media (min-width: 769px) {
+  .top-links {
+    position: static;
+    display: flex;
+    max-height: none;
+    opacity: 1;
+  }
+}
+
+/* ============ RESPONSIVE TUNING: tablets, laptops, desktops ============ */
+
+/* touch-friendly tap targets everywhere, all breakpoints */
+.icon-btn, .round-btn, .calc-btn, .qr-chip, .tt-btn, .chat-close{ -webkit-tap-highlight-color:transparent; }
+@media (pointer:coarse){
+  .icon-btn{width:44px; height:44px;}
+  .round-btn{width:44px; height:44px;}
+  .qr-chip, .tt-btn{padding-top:9px; padding-bottom:9px;}
+  nav.top-links a{padding:6px 0;}
+}
+
+/* large desktops / laptops: cap line-length, give sections breathing room */
+@media (min-width:1440px){
+  .hero-inner{max-width:800px;}
+  .section{padding:8vh 6vw;}
+  .quick-grid{grid-template-columns:repeat(auto-fill, minmax(210px,1fr));}
+}
+
+/* tablets in landscape and small laptops */
+@media (max-width:1024px){
+  .section{padding:6vh 5vw;}
+  .hero{padding:7vh 5vw 8vh;}
+  .quick-grid{grid-template-columns:repeat(auto-fill, minmax(170px,1fr)); gap:14px;}
+  .tools-wrap{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+  .chat-window{width:min(380px, 90vw); height:min(600px, 80vh);}
+}
+
+/* tablets in portrait */
+@media (max-width:860px){
+  .hero{text-align:left;}
+  .hero-ctas .btn{flex:1 1 auto; justify-content:center;}
+  .section-head{align-items:flex-start;}
+  .quick-grid{grid-template-columns:repeat(2, 1fr);}
+  .footer-grid{gap:24px;}
+}
+
+/* small tablets / large phones */
+@media (max-width:680px){
+  header{padding:12px 5vw;}
+  .brand-text strong{font-size:1.02rem;}
+  .hero p.lead{font-size:1rem;}
+  .hero-ctas{gap:10px;}
+  .btn{padding:13px 20px; font-size:0.9rem;}
+  .quick-grid{grid-template-columns:repeat(2, 1fr); gap:12px;}
+  .quick-card{padding:18px 16px;}
+  .tools-wrap{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr; gap:22px;}
+  .footer-grid > div{
+    background: rgba(246,238,223,0.05);
+    border: 1px solid rgba(246,238,223,0.1);
+    border-radius: 16px;
+    padding: 16px 16px 6px;
+    
+  }
+  .footer-grid > div:first-child{
+    grid-column: 1 / -1;
+    background: rgba(198,144,90,0.08);
+    border-color: rgba(198,144,90,0.18);
+  }
+}
+
+/* phones */
+@media (max-width:420px){
+  .quick-grid{grid-template-columns:1fr 1fr; gap:10px;}
+  .hero h1{font-size:clamp(1.7rem, 8vw, 2.2rem); }
+  .footer-bottom{flex-direction:column; align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark" aria-label="NGROPPMAN logo">
+      <img src="ngroppman logo.jpeg">
+    </div>
+    <div class="brand-text">
+      <strong>NGROPPMAN</strong>
+      <span>Upscaling Nigeria Groundnut Sector</span>
+    </div>
+  </div>
+  <nav class="top-links" id="topNav">
+    <a href="#quick-access">Services</a>
+    <a href="#tools">Calculators</a>
+    <a href="#kb">Knowledge Base</a>
+    <a href="#bodies">Regulatory &amp; Research</a>
+    <a href="#membership">Membership</a>
+    <a href="#" onclick="openChat(); return false;">Ask NGROPPMAN AI</a>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+    <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">National Groundnut Producers, Processors &amp; Marketers Association</div>
+    <h1>Grown from the soil, <em>guided by knowledge.</em></h1>
+    <p class="lead">NGROPPMAN AI is your groundnut farming companion.</p>
+    <div class="hero-ctas">
+      <button class="btn btn-primary" onclick="openChat()">💬 Ask NGROPPMANAI</button>
+      <a class="btn btn-ghost" href="#quick-access">Browse services ↓</a>
+    </div>
+  </div>
+  <div class="pod-scene" id="podScene" aria-hidden="true"></div>
+</section>
+
+<section class="section furrow-bg" id="quick-access">
+  <div class="section-head">
+    <div>
+      <h2>Quick access</h2>
+      <p>Jump straight to the information farmers and buyers ask for most.</p>
+    </div>
+  </div>
+  <div class="quick-grid" id="quickGrid"></div>
+</section>
+
+<section class="section" id="tools" style="background-color:var(--cream-2-a);">
+  <div class="section-head">
+    <div>
+      <h2>Field calculators</h2>
+      <p>Quick estimates to plan planting, spending, and returns. Figures are guides — confirm with your extension officer.</p>
+    </div>
+  </div>
+  <div class="tools-wrap">
+
+    <div class="tool-card">
+      <h3>🧮 Yield calculator</h3>
+      <p>Estimate expected groundnut yield from farm size and expected pod yield per hectare.</p>
+      <div class="field-row">
+        <label>Farm size (hectares)</label>
+        <input type="number" id="yFarm" placeholder="e.g. 2" min="0" step="0.1">
+      </div>
+      <div class="field-row">
+        <label>Expected yield (kg / hectare)</label>
+        <input type="number" id="yPerHa" placeholder="e.g. 1200" min="0">
+      </div>
+      <button class="calc-btn" onclick="calcYield()">Calculate yield</button>
+      <div class="tool-result" id="yResult">Enter values above to see your estimated total yield.</div>
+    </div>
+
+    <div class="tool-card">
+      <h3>💰 Profit calculator</h3>
+      <p>Estimate net profit from expected yield, selling price and total input cost.</p>
+      <div class="field-row">
+        <label>Total yield (kg)</label>
+        <input type="number" id="pYield" placeholder="e.g. 2400" min="0">
+      </div>
+      <div class="field-row">
+        <label>Price per kg (₦)</label>
+        <input type="number" id="pPrice" placeholder="e.g. 650" min="0">
+      </div>
+      <div class="field-row">
+        <label>Total input cost (₦)</label>
+        <input type="number" id="pCost" placeholder="e.g. 300000" min="0">
+      </div>
+      <button class="calc-btn" onclick="calcProfit()">Calculate profit</button>
+      <div class="tool-result" id="pResult">Enter values above to see your estimated profit.</div>
+    </div>
+
+    <div class="tool-card">
+      <h3>🧪 Fertilizer calculator</h3>
+      <p>Estimate total fertilizer quantity needed based on recommended application rate.</p>
+      <div class="field-row">
+        <label>Farm size (hectares)</label>
+        <input type="number" id="fFarm" placeholder="e.g. 2" min="0" step="0.1">
+      </div>
+      <div class="field-row">
+        <label>Fertilizer type</label>
+        <select id="fType">
+          <option value="100">NPK 15-15-15 (≈100 kg/ha)</option>
+          <option value="50">SSP — Single Super Phosphate (≈50 kg/ha)</option>
+          <option value="25">Gypsum, at pegging (≈25 kg/ha)</option>
+        </select>
+      </div>
+      <button class="calc-btn" onclick="calcFert()">Calculate fertilizer</button>
+      <div class="tool-result" id="fResult">Choose a fertilizer type and enter farm size.</div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="kb">
+  <div class="section-head">
+    <div>
+      <h2>Ask about anything below</h2>
+      <p>NGROPPMAN AI answers from a trusted groundnut knowledge base first — try one of these topics in the chat.</p>
+    </div>
+  </div>
+  <div class="quick-grid" id="kbGrid"></div>
+</section>
+
+<section class="section furrow-bg" id="bodies">
+  <div class="section-head">
+    <div>
+      <h2>Regulatory, research &amp; export bodies</h2>
+      <p>The agencies behind Nigeria's groundnut standards, research and export process — tap any card to ask NGROPPMAN AI more.</p>
+    </div>
+  </div>
+  <div class="quick-grid" id="bodiesGrid"></div>
+</section>
+
+<footer id="membership">
+  <div class="footer-grid">
+    <div>
+      <h4>NGROPPMAN</h4>
+      <p style="font-size:0.86rem; color:rgba(246,238,223,0.65); max-width:34ch; line-height:1.6;">
+        The National Groundnut Producers, Processors and Marketers Association of Nigeria — connecting farmers to knowledge, markets, and each other.
+      </p>
+    </div>
+    <div>
+      <h4>Services</h4>
+      <ul>
+        <li>Market prices</li>
+        <li>Disease &amp; pest guides</li>
+        <li>Fertilizer advice</li>
+        <li>Buying &amp; export standards</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Membership</h4>
+      <ul>
+        <li>Become a member</li>
+        <li>State chapters</li>
+        <li>Loans &amp; grants</li>
+        <li>Training calendar</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <ul>
+        <li>Ask NGROPPMAN AI</li>
+        <li>Contact extension office</li>
+        <li>Report an issue</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 NGROPPMAN. Built for Nigeria's groundnut farmers.</span>
+    <span>Available in English · Hausa · Yoruba · Igbo · Pidgin</span>
+  </div>
+</footer>
+
+<!-- Chat launcher -->
+<button class="chat-launcher" id="chatLauncher" onclick="openChat()" aria-label="Open NGROPPMAN AI chat">
+ 🥜 <span class="badge">AI</span>
+</button>
+
+<!-- Chat window -->
+<div class="chat-window" id="chatWindow" role="dialog" aria-label="NGROPPMAN AI chat">
+  <div class="chat-head">
+    <div class="avatar">🥜</div>
+    <div class="chat-head-info">
+      <strong>NGROPPMAN AI</strong>
+      <span id="statusLine">Online · answers from the NGROPPMAN knowledge base</span>
+    </div>
+    <button class="chat-close" onclick="closeChat()" aria-label="Close chat">✕</button>
+  </div>
+
+  <div class="chat-toolbar">
+    <select id="langSelect" title="Response language">
+      <option value="en">🇬🇧 English</option>
+      <option value="ha">🇳🇬 Hausa</option>
+      <option value="yo">🇳🇬 Yoruba</option>
+      <option value="ig">🇳🇬 Igbo</option>
+      <option value="pcm">🇳🇬 Pidgin</option>
+    </select>
+    <button class="tt-btn" id="voiceOutToggle" onclick="toggleVoiceOut()">🔊 Voice reply: off</button>
+    <button class="tt-btn" onclick="toggleTheme()">🌙 Dark mode</button>
+  </div>
+
+  <div class="chat-body" id="chatBody"></div>
+
+  <div class="quick-replies" id="quickReplies"></div>
+  <div class="img-preview" id="imgPreview" style="display:none;">
+    <img id="imgPreviewThumb" src="" alt="">
+    <span>Photo attached — describe the symptoms and send.</span>
+    <button onclick="clearImage()">Remove</button>
+  </div>
+
+  <div class="chat-input-row">
+    <button class="round-btn img" onclick="document.getElementById('imgInput').click()" title="Attach photo" aria-label="Attach photo">📎</button>
+    <input type="file" id="imgInput" accept="image/*" style="display:none" onchange="handleImage(event)">
+    <textarea id="chatInput" rows="1" placeholder="Type your farming question..." onkeydown="handleKey(event)"></textarea>
+    <button class="round-btn mic" id="micBtn" onclick="toggleMic()" title="Voice input" aria-label="Voice input">🎤</button>
+    <button class="round-btn send" onclick="sendMessage()" title="Send" aria-label="Send message">➤</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* =====================================================================
+   NGROPPMANAI — front-end demo logic.
+   The knowledge base below is illustrative sample content standing in
+   for Phase 2 (real NGROPPMANmanuals / extension guides / research).
+   The reply engine is a keyword-matching stand-in for the Phase 3
+   system-prompted AI, wired so the real API call can be dropped in
+   later at callAI() without changing any UI code.
+===================================================================== */
+
+/* ---------- THEME ---------- */
+function toggleTheme(){
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeToggle').textContent = isDark ? '🌙' : '☀️';
+}
+document.getElementById('themeToggle').onclick = toggleTheme;
+
+/* ---------- MOBILE NAV ---------- */
+const menuToggle = document.getElementById('menuToggle');
+const topNav = document.getElementById('topNav');
+
+menuToggle.addEventListener('click', () => {
+  topNav.classList.toggle('open');
+  const isOpen = topNav.classList.contains('open');
+  menuToggle.setAttribute('aria-expanded', isOpen);
+  menuToggle.textContent = isOpen ? '✕' : '☰';
+});
+
+topNav.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    topNav.classList.remove('open');
+    menuToggle.textContent = '☰';
+  });
+});
+
+/* ---------- QUICK ACCESS DATA ---------- */
+const QUICK_ACCESS = [
+  {icon:'📈', title:'Market Prices', desc:"Today's groundnut and by-product prices across Nigerian states.", q:"What is the current market price for groundnut?"},
+  {icon:'🛒', title:'Buying Groundnut', desc:'Where to buy in bulk, minimum orders, and how to pay.', q:'Where can I buy groundnut in bulk?'},
+  {icon:'🔍', title:'Quality Check', desc:'How to verify quality before you buy or sell.', q:'How do I check groundnut quality before buying?'},
+  {icon:'🦠', title:'Diseases', desc:'Identify and manage rosette, leaf spot, rust and more.', q:'What are the common groundnut diseases and how do I manage them?'},
+  {icon:'🐛', title:'Pests', desc:'Control aphids, termites, and leaf miners in your field.', q:'How do I control pests in my groundnut farm?'},
+  {icon:'🧪', title:'Fertilizers', desc:'Recommended NPK and gypsum rates by soil type.', q:'What fertilizer should I use for groundnut and how much?'},
+  {icon:'🌿', title:'Herbicides', desc:'Pre- and post-emergence weed control options.', q:'Which herbicides are recommended for groundnut farming?'},
+  {icon:'✅', title:'Best Practices', desc:'Spacing, planting depth, rotation and harvest timing.', q:'What are the best practices for groundnut farming?'},
+  {icon:'🤝', title:'Membership', desc:'Join NGROPPMANand access training and support.', q:'How do I become a NGROPPMANmember?'},
+  {icon:'🌍', title:'Export Market', desc:'Quality standards and buyers for groundnut export.', q:'What are the export standards for groundnut?'},
+  {icon:'🏛', title:'Regulatory Bodies', desc:'NAFDAC, SON, NEPC and other agencies that oversee groundnut.', q:'Tell me about regulatory bodies for groundnut'},
+];
+
+const KB_TOPICS = [
+  {icon:'🌦', title:'Weather Advice', desc:'Planting windows based on rainfall patterns.', q:'When is the best time to plant groundnut based on weather?'},
+  {icon:'📍', title:'State Guidance', desc:'Recommendations tailored to your state.', q:'What groundnut variety is recommended for Kano state?'},
+  {icon:'📸', title:'Disease Photo Check', desc:'Upload a leaf photo for a preliminary check.', q:'photo-help'},
+  {icon:'🏦', title:'Loans & Grants', desc:'Financing options for smallholder farmers.', q:'What loan or grant options are available for groundnut farmers?'},
+  {icon:'🗺', title:'Interactive Map', desc:'Groundnut-growing zones across Nigeria.', q:'Which states in Nigeria grow the most groundnut?'},
+  {icon:'📅', title:'Planting Calendar', desc:'Month-by-month field activity guide.', q:'What does a groundnut planting calendar look like?'},
+  {icon:'🌱', title:'Variety Database', desc:'Full list of released SAMNUT groundnut varieties.', q:'List groundnut varieties (SAMNUT)'},
+  {icon:'🔬', title:'Research Institutes', desc:'IAR Samaru, ICRISAT and who breeds new varieties.', q:'Tell me about research institutes'},
+  {icon:'🍫', title:'Oil & By-products', desc:'Buying groundnut oil, cake and roasted kernels.', q:'Tell me about groundnut oil and by-products'},
+  {icon:'💳', title:'Payment & Delivery', desc:'How produce payments and logistics normally work.', q:'What payment terms are normal when buying groundnut?'},
+  {icon:'🥗', title:'Nutrition Facts', desc:'Protein, calories and nutrients in groundnut.', q:'What is the nutritional value of groundnut?'},
+];
+
+/* Regulatory, research & export bodies — Phase 2 stand-in database */
+const REG_BODIES = [
+  {icon:'🧪', title:'NAFDAC', desc:'Food & drug safety registration for groundnut oil and processed snacks.', q:'Tell me about regulatory bodies for groundnut'},
+  {icon:'📏', title:'SON', desc:'Standards Organisation of Nigeria — sets quality standards & SONCAP certification.', q:'Tell me about regulatory bodies for groundnut'},
+  {icon:'🌱', title:'NASC', desc:'National Agricultural Seeds Council — seed certification & variety release.', q:'Tell me about regulatory bodies for groundnut'},
+  {icon:'🌍', title:'NEPC', desc:'Nigerian Export Promotion Council — exporter certificates & market access.', q:'Tell me about export agencies'},
+  {icon:'🏦', title:'NEXIM Bank', desc:'Nigerian Export-Import Bank — export credit, guarantees and finance.', q:'Tell me about export agencies'},
+  {icon:'🚢', title:'Shippers Council', desc:'Nigeria Shippers\' Council — shipping logistics oversight & disputes.', q:'Tell me about export agencies'},
+  {icon:'🛃', title:'NAQS', desc:'Nigeria Agricultural Quarantine Service — phytosanitary export certificates.', q:'Tell me about export agencies'},
+  {icon:'🔬', title:'IAR Samaru', desc:'Institute for Agricultural Research, ABU Zaria — home of the SAMNUT varieties.', q:'Tell me about research institutes'},
+  {icon:'🧬', title:'ICRISAT', desc:'Regional research partner supplying improved groundnut breeding lines.', q:'Tell me about research institutes'},
+  {icon:'🌰', title:'African Groundnut Council', desc:'Regional standards & market-data body, now headquartered in Kano.', q:'Tell me about research institutes'},
+];
+
+function renderCards(list, container){
+  const el = document.getElementById(container);
+  el.innerHTML = list.map(item => `
+    <button class="quick-card" onclick='quickAsk(${JSON.stringify(item.q)})'>
+      <div class="qi">${item.icon}</div>
+      <strong>${item.title}</strong>
+      <span>${item.desc}</span>
+    </button>`).join('');
+}
+renderCards(QUICK_ACCESS, 'quickGrid');
+renderCards(KB_TOPICS, 'kbGrid');
+renderCards(REG_BODIES, 'bodiesGrid');
+
+function quickAsk(q){
+  openChat();
+  if(q === 'photo-help'){
+    appendBotMessage("You can attach a photo of the affected leaf or pod using the 📎 button, then describe what you're seeing (spots, wilting, holes, discoloration). I'll give a preliminary read — always confirm with your local extension officer before treating.");
+    return;
+  }
+  document.getElementById('chatInput').value = q;
+  sendMessage();
+}
+
+/* ---------- KNOWLEDGE BASE (Phase 2 stand-in) ---------- */
+const KNOWLEDGE_BASE = [
+  { id:'price', keys:['price','market','sell','naira','₦'],
+    reply:"Groundnut prices vary by state and season. As a general guide, farm-gate prices for shelled groundnut in major producing states (Kano, Jigawa, Katsina, Kaduna) typically range between ₦550 and ₦750 per kg, with unshelled pods around ₦300–₦420 per kg. Prices rise closer to the lean season (June–August) and fall just after harvest (October–December). For today's exact figures, check the Market Prices board — NGROPPMANupdates it daily from state committee reports.",
+    src:"Source: NGROPPMAN Daily Market Price Bulletin",
+    follow:['Where can I buy groundnut in bulk?','How do I check quality before buying?'] },
+  { id:'buy', keys:['buy groundnut','where to buy','wholesale','bulk purchase','bulk order','minimum order','supplier','buy in bulk','purchase groundnut','buying groundnut'],
+    reply:"Most bulk groundnut in Nigeria moves through state produce markets (Dawanau Market in Kano is one of the largest in West Africa), registered farmer cooperatives, and NGROPPMAN member groups. Wholesale buyers usually deal directly with cooperative unions or licensed produce buying agents, with minimum order quantities often starting around 1–5 tonnes for commercial buyers. Always ask for a weighing ticket, request a sample bag for a moisture check, and confirm whether the quoted price is for shelled or unshelled (in-shell) groundnut — the two differ a lot in price.",
+    src:"Source: NGROPPMAN Market Linkage Guide",
+    follow:['How do I check quality before buying?','What payment terms are normal?','Tell me about export agencies'] },
+  { id:'quality', keys:['check quality','verify quality','inspect groundnut','moisture content','before buying','quality before','quality check'],
+    reply:"Before buying, check moisture — dry kernels should snap rather than bend, since high moisture invites mould and aflatoxin. Look for a uniform kernel colour with no shrivelled or dark seeds, smell for anything musty or rancid (a red flag), and ask for the last aflatoxin test result if you're buying at scale for processing or export. For in-shell groundnut, shake a handful — well-dried pods rattle because the kernel has separated from the shell.",
+    src:"Source: NGROPPMAN Buyer's Quality Checklist",
+    follow:['What are the export standards?',"What's today's market price?"] },
+  { id:'payment', keys:['payment terms','delivery','logistics','transport groundnut','how to pay','deposit','payment'],
+    reply:"Common local practice is a part payment or deposit (often 30–50%) on inspection of a sample, with the balance paid on delivery and weighing at the buyer's location. Larger contracts sometimes use a warehouse receipt system, where stored groundnut in a certified warehouse backs the payment. Always agree in writing on who bears transport cost, loading/offloading, and what happens if moisture or weight varies at delivery.",
+    src:"Source: NGROPPMAN Market Linkage Guide",
+    follow:['How do I check quality before buying?','Are there loans for buying inputs?'] },
+  { id:'byproducts', keys:['groundnut oil','processing','cake','by-product','press','byproduct'],
+    reply:"Groundnut is also traded as processed by-products: crude and refined groundnut oil, groundnut cake (a protein-rich livestock feed by-product left after oil pressing), and roasted or salted kernels for the snack market. When buying oil, check clarity, smell and free fatty acid content; when buying cake, check protein content and make sure it's free of mould, since poorly dried cake spoils fast.",
+    src:"Source: NGROPPMAN Processing & By-Products Guide",
+    follow:["What's today's market price?",'What are the export standards?'] },
+  { id:'disease', keys:['disease','rosette','leaf spot','rust','fungus','wilt','yellow'],
+    reply:"The most common groundnut diseases in Nigeria are: Groundnut Rosette Virus (spread by aphids — causes stunting and yellow mottled leaves; control by early planting and aphid management), Cercospora Leaf Spot (dark circular spots — use resistant varieties and fungicide sprays at first sign), and Rust (orange pustules on leaves — remove infected debris after harvest, rotate crops). If you're seeing a specific symptom, describe it or send a photo and I can narrow it down.",
+    src:"Source: NGROPPMAN Pest & Disease Field Guide",
+    follow:['Send a photo instead','How do I control pests?'] },
+  { id:'pest', keys:['pest','aphid','termite','miner','insect','worm'],
+    reply:"Key groundnut pests include aphids (vector for rosette virus — treat early with recommended insecticide or neem-based options), termites (attack pods in dry soil — avoid delayed harvest, use seed treatment), and leaf miners (tunnel through leaves — remove and destroy affected leaves, rotate crops). Weekly scouting and treating only when thresholds are crossed protects yield without overusing chemicals.",
+    src:"Source: NGROPPMAN Pest & Disease Field Guide",
+    follow:['What are the common diseases?','What fertilizer should I use?'] },
+  { id:'fertilizer', keys:['fertilizer','npk','manure','gypsum','nutrient','soil fertility'],
+    reply:"Groundnut generally needs modest nitrogen (it fixes its own via root nodules) but responds well to phosphorus and calcium. A common recommendation is NPK 15-15-15 at about 100 kg/ha at planting, plus gypsum at about 25 kg/ha at pegging (flowering stage) to support pod filling. On poor sandy soils, well-rotted organic manure at 2–3 tonnes/ha before planting improves structure and nutrient retention. Use the Fertilizer Calculator above to size this to your farm.",
+    src:"Source: NGROPPMAN Fertilizer Recommendation Guide",
+    follow:['Which herbicides should I use?','What are the best practices?'] },
+  { id:'herbicide', keys:['herbicide','weed'],
+    reply:"For weed control, apply a pre-emergence herbicide (such as pendimethalin) within 1–3 days after planting before weeds emerge, followed by hand-weeding or a post-emergence herbicide at 3–4 weeks if needed. Avoid overlapping herbicide with fertilizer application, and always follow label rates — over-application can stunt groundnut seedlings.",
+    src:"Source: NGROPPMAN Herbicide Recommendation Guide",
+    follow:['What fertilizer should I use?','What are the best practices?'] },
+  { id:'bestpractice', keys:['best practice','spacing','planting depth','rotation','how to plant','harvest'],
+    reply:"Core best practices: plant at the start of reliable rains, space rows 45–60 cm apart with 10–15 cm between plants, sow seeds 5 cm deep in moist soil, and rotate with cereals (maize, sorghum) every season to break pest and disease cycles. Harvest when 70–80% of pods show dark veining inside the shell — usually 90–120 days after planting depending on variety. Curing pods in the shade for a few days before storage reduces aflatoxin risk.",
+    src:"Source: NGROPPMAN Groundnut Production Manual",
+    follow:['Show me a planting calendar','List groundnut varieties (SAMNUT)'] },
+  { id:'member', keys:['member','join','membership','association'],
+    reply:"To become a NGROPPMAN member, you register with your local state chapter, providing your farm location, size, and produce type. Membership gives you access to training, bulk input discounts, market linkage, and eligibility for cooperative loan schemes. Visit the Membership section of this site or contact your nearest state chapter office to start registration.",
+    src:"Source: NGROPPMAN Membership Handbook",
+    follow:['Are there loans for buying inputs?','What are the export standards?'] },
+  { id:'export', keys:['export','international','standard','quality grade','aflatoxin','export standards'],
+    reply:"For export, groundnut must meet strict aflatoxin limits (typically below 4–15 ppb depending on destination market), have moisture content below 8%, and be free of foreign matter, broken kernels, and pest damage above allowed thresholds. Proper drying and storage — keeping pods off bare ground and away from moisture — is the single biggest factor in meeting export quality. NGROPPMAN's Export Desk can connect qualifying farmer groups to registered exporters.",
+    src:"Source: NGROPPMAN Export Standards Brief; NEPC Groundnut Product Profile",
+    follow:['Tell me about export agencies','How do I check quality before buying?'] },
+  { id:'weather', keys:['weather','rain','when to plant','planting time','climate'],
+    reply:"Groundnut should generally be planted once rains are reliably established, avoiding both drought stress at germination and waterlogging. In Nigeria's Sudan and Sahel savanna belts (Kano, Jigawa, Katsina), this is typically late May to June. In the Guinea savanna (Kaduna, Niger, Bauchi), planting can often start a few weeks earlier. Always check the current season's rainfall outlook from NiMet before committing, as onset dates shift year to year.",
+    src:"Source: NGROPPMAN Climate-Smart Agriculture Guide",
+    follow:['Show me a planting calendar','What variety is recommended for my state?'] },
+  { id:'state', keys:['state','kano','jigawa','katsina','kaduna','variety'],
+    reply:"State-specific variety guidance (general): Kano and Jigawa (Sudan savanna) — SAMNUT 24 or SAMNUT 25, both drought-tolerant. Kaduna and Niger (Guinea savanna) — SAMNUT 23, higher-yielding under better rainfall. Always confirm current recommended varieties with your state Agricultural Development Programme (ADP), as recommendations are updated as new varieties are released.",
+    src:"Source: NGROPPMAN State Extension Notes",
+    follow:['List groundnut varieties (SAMNUT)','Tell me about research institutes'] },
+  { id:'loan', keys:['loan','grant','finance','credit','fund'],
+    reply:"Smallholder groundnut farmers can access financing through the Central Bank's Anchor Borrowers' Programme, the Bank of Agriculture's seasonal input loans, and NGROPPMAN's cooperative group lending scheme for registered members. Requirements typically include proof of farm ownership or lease, group guarantor arrangements, and a simple farm plan. Contact your state NGROPPMANchapter for the current application window.",
+    src:"Source: NGROPPMAN Loans & Grants Directory",
+    follow:['How do I become a member?','What fertilizer should I use?'] },
+  { id:'calendar', keys:['calendar','month','stage','timeline'],
+    reply:"A general groundnut calendar: Land preparation (April–May) → Planting at rain onset (late May–June) → Weeding and first fertilizer/herbicide application (2–4 weeks after planting) → Gypsum application at pegging (6–8 weeks) → Pest/disease scouting through flowering → Harvest (90–120 days, variety-dependent) → Curing and drying (1–2 weeks) → Storage/sale. Exact timing shifts with your state and the season's rainfall.",
+    src:"Source: NGROPPMAN Groundnut Production Manual",
+    follow:['What are the best practices?','What weather signals planting time?'] },
+  { id:'regulatory', keys:['nafdac','regulat','standard organisation','son certificat','food safety agency','regulatory bodies','regulatory body','regulation'],
+    reply:"Key regulatory bodies for groundnut and groundnut products in Nigeria include: NAFDAC (National Agency for Food and Drug Administration and Control), which registers and certifies food products such as groundnut oil and processed snacks for safety; SON (Standards Organisation of Nigeria), which sets and enforces national product and quality standards and issues SONCAP certificates required for export or import; and the Federal Ministry of Agriculture and Food Security, which sets overall sector policy. For agro-inputs like seed, the National Agricultural Seeds Council (NASC) handles seed certification and variety release.",
+    src:"Source: NGROPPMAN Regulatory Directory; Nigeria Trade Portal",
+    follow:['Tell me about export agencies','Tell me about research institutes'] },
+  { id:'exportagency', keys:['nepc','export promotion council','nexim','shippers council','nepza','export agency','export agencies','naqs'],
+    reply:"For exporting groundnut from Nigeria, the main agencies are: the Nigerian Export Promotion Council (NEPC) — Nigeria's lead export promotion agency, based in Maitama, Abuja, which issues exporter certificates and supports market access; the Nigerian Export-Import Bank (NEXIM) — provides export credit and guarantees; the Nigeria Export Processing Zones Authority (NEPZA) — manages export processing zones with duty incentives; and the Nigeria Shippers' Council — oversees shipping logistics and dispute resolution for exporters. A phytosanitary certificate from the Nigeria Agricultural Quarantine Service (NAQS) and a SONCAP certificate from SON are both usually required before a groundnut shipment can clear for export.",
+    src:"Source: NEPC Groundnut Product Profile; Nigeria Trade Portal",
+    follow:['What are the export quality standards?','Tell me about research institutes'] },
+  { id:'research', keys:['research institute','iar samaru','icrisat','research agencies','who develops groundnut varieties','breeding institute','research institutes'],
+    reply:"Groundnut research and variety development in Nigeria is led mainly by the Institute for Agricultural Research (IAR), Ahmadu Bello University, Samaru-Zaria — the source of the SAMNUT variety series grown across the country. Regionally, ICRISAT (International Crops Research Institute for the Semi-Arid Tropics) supplies improved breeding lines and supports variety trials across West Africa, while the African Groundnut Council (founded in Lagos in 1964, now based in Kano) coordinates regional research, quality standards and market data among groundnut-producing member countries.",
+    src:"Source: NEPC Groundnut Product Profile; IAR Samaru publications",
+    follow:['List groundnut varieties (SAMNUT)','Tell me about regulatory bodies'] },
+  { id:'varieties', keys:['samnut','variety list','list of varieties','which varieties','groundnut varieties available'],
+    reply:"Common IAR-developed SAMNUT varieties grown in Nigeria include SAMNUT 21, 22 and 23 (medium-duration types adapted to the Guinea and Sudan savanna), SAMNUT 24 and 25 (higher-yielding and among the most widely adopted nationally — SAMNUT 24 alone has historically covered roughly a quarter of national groundnut area), and SAMNUT 26 (bred with improved resistance to late leaf spot). Older lines such as SAMNUT 14 remain valued locally for drought tolerance. Ask your state ADP which SAMNUT varieties are currently being multiplied near you, since recommendations refresh as new lines are released.",
+    src:"Source: IAR Samaru; NEPC Groundnut Product Profile",
+    follow:['What fertilizer should I use?','What variety is recommended for my state?'] },
+  { id:'nutrition', keys:['nutrition','nutritional value','protein content','calories','vitamins'],
+    reply:"Groundnut kernels are calorie-dense and rich in protein (roughly 25–28g per 100g) and healthy fats, along with vitamin E, niacin, magnesium and folate. This is part of why groundnut cake — the by-product left after oil pressing — is valued as a livestock feed ingredient, and why groundnut is promoted as a low-cost protein source in food security programmes.",
+    src:"Source: FAO Nutrient Database; NEPC Groundnut Product Profile",
+    follow:['Tell me about groundnut oil and by-products','What are the export standards?'] },
+];
+
+function searchKnowledgeBase(text){
+  const t = text.toLowerCase();
+  let best = null, bestScore = 0;
+  KNOWLEDGE_BASE.forEach(entry => {
+    let score = 0;
+    entry.keys.forEach(k => { if(t.includes(k)) score += k.length; });
+    if(score > bestScore){ bestScore = score; best = entry; }
+  });
+  return best;
+}
+
+/* Simple non-English acknowledgement lines, keyed by language.
+   In production this would route through real translation / a
+   multilingual model rather than a fixed prefix. */
+const LANG_NOTE = {
+  en: "",
+  ha: "(An fassara wannan amsa zuwa Hausa a cikin ainihin tsarin.) ",
+  yo: "(A óò túmọ̀ èsì yìí sí èdè Yorùbá nínú ètò gidi.) ",
+  ig: "(A ga-atụgharị azịza a n'asụsụ Igbo n'usoro eziokwu.) ",
+  pcm: "(For real system, we go translate dis one go Pidgin.) ",
+};
+
+/* Light conversational openers, used only for English so the
+   dialogue feels like a back-and-forth rather than a lookup box. */
+const OPENERS = ["Good question —", "Happy to help with that.", "Here's what I've got:", "Sure, let's look at that.", "Great, here's the guidance:"];
+function randomOpener(){ return OPENERS[Math.floor(Math.random()*OPENERS.length)]; }
+
+const DEFAULT_FOLLOWUPS = ['Market prices today', 'Buying in bulk', 'Common diseases', 'Regulatory bodies'];
+
+/* Placeholder for Phase 3: real AI call.
+   Swap the body of this function for a fetch() to your backend /
+   the Anthropic API once the knowledge base and system prompt are
+   live server-side. Keeping this as one function means no other
+   UI code needs to change later. */
+async function callAI(userText, lang, hasImage){
+  await new Promise(r => setTimeout(r, 650 + Math.random()*500)); // simulate thinking
+  if(hasImage){
+    return {
+      text: LANG_NOTE[lang] + "Thanks for the photo. In the full system this image would be checked against the NGROPPMANdisease reference set. For now: look closely at whether spots have a yellow halo (often Cercospora leaf spot), whether leaves are mottled and stunted (possible rosette virus), or whether damage looks chewed rather than spotted (likely a pest, not a disease). Please also confirm with your local extension officer before treating.",
+      src: "Source: NGROPPMAN Pest & Disease Field Guide (preliminary — not a lab diagnosis)",
+      follow: ['What are the common pests?','What are the common diseases?']
+    };
+  }
+  const match = searchKnowledgeBase(userText);
+  if(match){
+    const opener = lang === 'en' ? randomOpener() + " " : "";
+    return { text: LANG_NOTE[lang] + opener + match.reply, src: match.src, follow: match.follow || DEFAULT_FOLLOWUPS };
+  }
+  return {
+    text: LANG_NOTE[lang] + "I don't have a confident, documented answer for that in the NGROPPMANknowledge base yet, so I'd rather say so than guess. Please try rephrasing, or contact your local NGROPPMANextension office for this specific question.",
+    src: null,
+    follow: DEFAULT_FOLLOWUPS
+  };
+}
+
+/* ---------- CHAT UI ---------- */
+const chatWindow = document.getElementById('chatWindow');
+const chatBody = document.getElementById('chatBody');
+let attachedImage = null;
+let firstOpen = true;
+const conversation = []; // lightweight running history, keeps the chat feeling like one dialogue
+
+function openChat(){
+  chatWindow.classList.add('open');
+  if(firstOpen){
+    firstOpen = false;
+    appendBotMessage("Welcome! I'm NGROPPMAN AI, your groundnut farming and buying assistant. Ask me about market prices, buying in bulk, diseases, pests, fertilizers, herbicides, best practices, membership, export standards, or the agencies behind Nigeria's groundnut trade — in English, Hausa, Yoruba, Igbo, or Pidgin.");
+    renderQuickReplies(['Market prices today', 'Where can I buy groundnut in bulk?', 'Common diseases', 'Become a member']);
+  }
+}
+function closeChat(){ chatWindow.classList.remove('open'); }
+
+function renderQuickReplies(list){
+  document.getElementById('quickReplies').innerHTML = list.map(q =>
+    `<button class="qr-chip" onclick='quickAsk(${JSON.stringify(q)})'>${q}</button>`
+  ).join('');
+}
+
+function nowStamp(){
+  const d = new Date();
+  return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+}
+
+function appendUserMessage(text, imgSrc){
+  const row = document.createElement('div');
+  row.className = 'msg-row user';
+  row.innerHTML = `<div class="msg user">${escapeHTML(text)}${imgSrc ? `<img src="${imgSrc}" alt="Uploaded photo">` : ''}<span class="timestamp">${nowStamp()}</span></div><div class="msg-avatar">🧑🏽‍🌾</div>`;
+  chatBody.appendChild(row);
+  chatBody.scrollTop = chatBody.scrollHeight;
+  conversation.push({role:'user', text});
+}
+function appendBotMessage(text, src){
+  const row = document.createElement('div');
+  row.className = 'msg-row bot';
+  row.innerHTML = `<div class="msg-avatar">🥜</div><div class="msg bot">${escapeHTML(text)}${src ? `<span class="src">${src}</span>` : ''}<span class="timestamp">${nowStamp()}</span></div>`;
+  chatBody.appendChild(row);
+  chatBody.scrollTop = chatBody.scrollHeight;
+  conversation.push({role:'bot', text});
+  if(voiceOutOn) speak(text);
+}
+function showTyping(){
+  const row = document.createElement('div');
+  row.className = 'typing-row';
+  row.id = 'typingIndicator';
+  row.innerHTML = '<div class="msg-avatar">🥜</div><div class="typing"><span></span><span></span><span></span></div>';
+  chatBody.appendChild(row);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+function hideTyping(){
+  const t = document.getElementById('typingIndicator');
+  if(t) t.remove();
+}
+function escapeHTML(s){
+  const d = document.createElement('div');
+  d.innerText = s;
+  return d.innerHTML;
+}
+
+async function sendMessage(){
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text && !attachedImage) return;
+  const lang = document.getElementById('langSelect').value;
+
+  appendUserMessage(text || "(photo attached)", attachedImage);
+  input.value='';
+  input.style.height = 'auto';
+  const hadImage = !!attachedImage;
+  clearImage();
+  document.getElementById('quickReplies').innerHTML = '';
+
+  showTyping();
+  const res = await callAI(text, lang, hadImage);
+  hideTyping();
+  appendBotMessage(res.text, res.src);
+  renderQuickReplies(res.follow || DEFAULT_FOLLOWUPS);
+}
+function handleKey(e){
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+/* image attach */
+function handleImage(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    attachedImage = ev.target.result;
+    document.getElementById('imgPreviewThumb').src = attachedImage;
+    document.getElementById('imgPreview').style.display = 'flex';
+  };
+  reader.readAsDataURL(file);
+}
+function clearImage(){
+  attachedImage = null;
+  document.getElementById('imgPreview').style.display = 'none';
+  document.getElementById('imgInput').value = '';
+}
+
+/* ---------- VOICE INPUT (Web Speech API) ---------- */
+let recognition = null;
+let recording = false;
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if(SpeechRecognition){
+  recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    document.getElementById('chatInput').value = transcript;
+    sendMessage();
+  };
+  recognition.onend = () => { recording = false; updateMicUI(); };
+  recognition.onerror = () => { recording = false; updateMicUI(); };
+}
+function updateMicUI(){
+  document.getElementById('micBtn').classList.toggle('recording', recording);
+}
+function toggleMic(){
+  if(!recognition){
+    appendBotMessage("Voice input isn't supported in this browser. Try Chrome on desktop or Android, or type your question instead.");
+    return;
+  }
+  const langMap = {en:'en-NG', ha:'ha-NG', yo:'yo-NG', ig:'ig-NG', pcm:'en-NG'};
+  recognition.lang = langMap[document.getElementById('langSelect').value] || 'en-NG';
+  if(recording){
+    recognition.stop();
+  } else {
+    recording = true;
+    updateMicUI();
+    try{ recognition.start(); } catch(e){ recording = false; updateMicUI(); }
+  }
+}
+
+/* ---------- VOICE OUTPUT (SpeechSynthesis) ---------- */
+let voiceOutOn = false;
+function toggleVoiceOut(){
+  voiceOutOn = !voiceOutOn;
+  document.getElementById('voiceOutToggle').textContent = '🔊 Voice reply: ' + (voiceOutOn ? 'on' : 'off');
+  document.getElementById('voiceOutToggle').classList.toggle('active', voiceOutOn);
+}
+function speak(text){
+  if(!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  const langMap = {en:'en-GB', ha:'en-NG', yo:'en-NG', ig:'en-NG', pcm:'en-NG'};
+  u.lang = langMap[document.getElementById('langSelect').value] || 'en-GB';
+  u.rate = 0.98;
+  window.speechSynthesis.speak(u);
+}
+
+/* ---------- CALCULATORS ---------- */
+function calcYield(){
+  const farm = parseFloat(document.getElementById('yFarm').value);
+  const perHa = parseFloat(document.getElementById('yPerHa').value);
+  const out = document.getElementById('yResult');
+  if(!farm || !perHa){ out.textContent = 'Please enter both farm size and expected yield per hectare.'; return; }
+  const total = farm * perHa;
+  out.textContent = `Estimated total yield: ${total.toLocaleString()} kg (${(total/1000).toFixed(2)} tonnes) from ${farm} ha.`;
+}
+function calcProfit(){
+  const yieldKg = parseFloat(document.getElementById('pYield').value);
+  const price = parseFloat(document.getElementById('pPrice').value);
+  const cost = parseFloat(document.getElementById('pCost').value);
+  const out = document.getElementById('pResult');
+  if(!yieldKg || !price || cost === undefined || isNaN(cost)){ out.textContent = 'Please enter yield, price per kg, and total input cost.'; return; }
+  const revenue = yieldKg * price;
+  const profit = revenue - cost;
+  out.textContent = `Revenue: ₦${revenue.toLocaleString()} — Cost: ₦${cost.toLocaleString()} — Estimated profit: ₦${profit.toLocaleString()}${profit < 0 ? ' (a loss at these figures)' : ''}.`;
+}
+function calcFert(){
+  const farm = parseFloat(document.getElementById('fFarm').value);
+  const rate = parseFloat(document.getElementById('fType').value);
+  const out = document.getElementById('fResult');
+  if(!farm){ out.textContent = 'Please enter your farm size in hectares.'; return; }
+  const total = farm * rate;
+  out.textContent = `Estimated fertilizer needed: ${total.toLocaleString()} kg (${(total/50).toFixed(1)} bags of 50kg) for ${farm} ha at ${rate} kg/ha.`;
+}
+
+/* auto-grow textarea */
+document.getElementById('chatInput').addEventListener('input', function(){
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 90) + 'px';
+});
+
+/* =====================================================================
+   3D HERO SCENE — Three.js
+   A handful of real 3D groundnut pods (two lobed spheres joined by a
+   waist) tumbling slowly in soft studio light. Pauses off-screen and
+   respects reduced-motion; resizes itself for phone / tablet / desktop.
+===================================================================== */
+(function initPodScene(){
+  const mount = document.getElementById('podScene');
+  if(!mount || typeof THREE === 'undefined') return;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+  camera.position.set(0, 0.4, 9);
+
+  const renderer = new THREE.WebGLRenderer({ alpha:true, antialias:true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  mount.appendChild(renderer.domElement);
+
+  /* lighting: warm key light + cool fill, like a small studio setup */
+  scene.add(new THREE.AmbientLight(0x3a2c1e, 1.1));
+  const key = new THREE.DirectionalLight(0xffe4b0, 1.35);
+  key.position.set(4, 5, 6);
+  scene.add(key);
+  const fill = new THREE.DirectionalLight(0x9fc98a, 0.55);
+  fill.position.set(-5, -2, 3);
+  scene.add(fill);
+  const rim = new THREE.DirectionalLight(0xffffff, 0.4);
+  rim.position.set(-2, 3, -5);
+  scene.add(rim);
+
+  const palette = [0xC6905A, 0x4C7A3D, 0xE2A23B, 0xE8C9A0];
+
+  /* build one groundnut pod: two lobes + a pinched waist, all from
+     spheres so it renders correctly on the older three r128 build */
+  function makePod(color){
+    const group = new THREE.Group();
+    const mat = new THREE.MeshStandardMaterial({ color, roughness:0.55, metalness:0.05 });
+    const lobeGeo = new THREE.SphereGeometry(0.62, 24, 18);
+    const lobeA = new THREE.Mesh(lobeGeo, mat);
+    lobeA.position.set(0, 0.62, 0);
+    lobeA.scale.set(1, 1.15, 1);
+    const lobeB = new THREE.Mesh(lobeGeo, mat);
+    lobeB.position.set(0, -0.62, 0);
+    lobeB.scale.set(1, 1.15, 1);
+    const waistGeo = new THREE.SphereGeometry(0.4, 20, 16);
+    const waist = new THREE.Mesh(waistGeo, mat);
+    waist.scale.set(0.85, 0.7, 0.85);
+    group.add(lobeA, lobeB, waist);
+    /* faint shell striations */
+    for(let i=-1;i<=1;i++){
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(0.66, 0.02, 6, 20),
+        new THREE.MeshStandardMaterial({ color:0x2E2115, roughness:0.8, transparent:true, opacity:0.18 })
+      );
+      ring.rotation.x = Math.PI/2;
+      ring.position.y = i*0.5;
+      group.add(ring);
+    }
+    return group;
+  }
+
+  const pods = [];
+  const count = 5;
+  for(let i=0;i<count;i++){
+    const pod = makePod(palette[i % palette.length]);
+    const angle = (i/count) * Math.PI * 2;
+    const radius = 2.1;
+    pod.position.set(Math.cos(angle)*radius*0.9, Math.sin(angle)*radius*0.55, (i - count/2)*0.4);
+    const scale = 0.75 + Math.random()*0.5;
+    pod.scale.setScalar(scale);
+    pod.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+    pods.push({ mesh:pod, speed: 0.15 + Math.random()*0.2, drift: 0.4 + Math.random()*0.3, offset: Math.random()*10 });
+    scene.add(pod);
+  }
+
+  function resize(){
+    const w = mount.clientWidth || 1;
+    const h = mount.clientHeight || 1;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  /* gentle parallax toward the pointer on devices with a mouse */
+  let targetX = 0, targetY = 0;
+  if(window.matchMedia('(pointer:fine)').matches){
+    window.addEventListener('mousemove', (e) => {
+      targetX = (e.clientX / window.innerWidth - 0.5) * 0.6;
+      targetY = (e.clientY / window.innerHeight - 0.5) * 0.4;
+    });
+  }
+
+  let paused = false;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => { paused = !en.isIntersecting; });
+  }, { threshold: 0.05 });
+  io.observe(mount);
+
+  const clock = new THREE.Clock();
+  function animate(){
+    requestAnimationFrame(animate);
+    if(paused) return;
+    const t = clock.getElapsedTime();
+    pods.forEach(p => {
+      if(!reduceMotion){
+        p.mesh.rotation.x += 0.0025 * p.speed * 4;
+        p.mesh.rotation.y += 0.004 * p.speed * 4;
+        p.mesh.position.y += Math.sin(t*p.drift + p.offset) * 0.0018;
+      }
+    });
+    scene.rotation.y += (targetX - scene.rotation.y) * 0.04;
+    scene.rotation.x += (targetY - scene.rotation.x) * 0.04;
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+/* =====================================================================
+   3D CARD TILT — pointer-driven perspective tilt for quick-access
+   and calculator cards, mouse/trackpad only (skipped on touch).
+===================================================================== */
+(function initCardTilt(){
+  if(!window.matchMedia('(pointer:fine)').matches) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  function attachTilt(card){
+    let raf = null;
+    function onMove(e){
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      if(raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        card.style.transform = `translateY(-4px) rotateX(${(-y*8).toFixed(2)}deg) rotateY(${(x*10).toFixed(2)}deg)`;
+      });
+    }
+    function onLeave(){
+      if(raf) cancelAnimationFrame(raf);
+      card.style.transform = '';
+    }
+    card.addEventListener('mousemove', onMove);
+    card.addEventListener('mouseleave', onLeave);
+  }
+
+  function attachAll(){
+    document.querySelectorAll('.quick-card, .tool-card').forEach(card => {
+      if(card.dataset.tiltBound) return;
+      card.dataset.tiltBound = '1';
+      attachTilt(card);
+    });
+  }
+  attachAll();
+  /* quick/kb/bodies grids render asynchronously above — re-scan shortly after load */
+  setTimeout(attachAll, 300);
+})();
+</script>
+</body>
+</html>
