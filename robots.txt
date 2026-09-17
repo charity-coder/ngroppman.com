@@ -1,0 +1,7 @@
+# NGROPPMAN robots.txt
+# Allow search engines to crawl the public website.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://ngroppman.com/sitemap.xml
