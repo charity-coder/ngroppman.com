@@ -3599,12 +3599,12 @@
       class="js-register-open">Join Now</a>
     <a href="Chatbolt.html?chat=1">Chat bolt</a>
   </nav>
-  <!-- SEARCH (powered by Bing) -->
+  <!-- SEARCH (powered by Google) -->
   <form class="site-search" id="siteSearch" role="search" hidden>
     <div class="site-search-row">
       <input type="search" id="siteSearchInput" placeholder="Search NGROPPMAN: groundnut, farmers, events…"
         aria-label="Search" maxlength="120" autocomplete="off">
-      <button type="submit">Search with Bing</button>
+      <button type="submit">Search with Google</button>
       <button type="button" class="site-search-close" id="siteSearchClose" aria-label="Close search">&times;</button>
     </div>
     <label class="site-search-all"><input type="checkbox" id="siteSearchAll"> Search the whole web instead of only
@@ -4577,7 +4577,7 @@
       background: #a53f14
     }
   </style>
-  <script id="bing-search-js">
+  <script id="google-search-js">
     (function () {
       var btn = document.getElementById('siteSearchBtn'), form = document.getElementById('siteSearch'),
         input = document.getElementById('siteSearchInput'), all = document.getElementById('siteSearchAll'),
@@ -4596,7 +4596,7 @@
         var q = input.value.trim();
         if (!q) { input.focus(); return; }
         var query = all.checked ? q : 'site:ngroppman.com ' + q;
-        window.open('https://www.bing.com/search?q=' + encodeURIComponent(query), '_blank', 'noopener');
+        window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank', 'noopener');
       });
     })();
   </script>
