@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://ngroppman.com/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://ngroppman.com/groundnut%20farm%20work.jpg</image:loc>
+      <image:caption>Groundnut farmers at work in Nigeria</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ngroppman.com/farm%20harvest.jpg</image:loc>
+      <image:caption>Groundnut harvest in Nigeria</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ngroppman.com/groundnut%20sprout.jpg</image:loc>
+      <image:caption>Groundnut seedlings sprouting on a Nigerian farm</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ngroppman.com/milling%20factory.jpg</image:loc>
+      <image:caption>Groundnut milling and processing factory</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ngroppman.com/peanut%20butter.jpg</image:loc>
+      <image:caption>Peanut butter made from Nigerian groundnuts</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ngroppman.com/digital%20farm.jpg</image:loc>
+      <image:caption>Digital farming and technology for groundnut growers</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ngroppman.com/empower%20women.jpg</image:loc>
+      <image:caption>Empowering women in the groundnut value chain</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ngroppman.com/ngroppman%20logo.jpeg</image:loc>
+      <image:caption>NGROPPMAN official logo</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ngroppman.com/president.jpeg</image:loc>
+      <image:caption>Abdulrazaq Usman Muhammad, National President of NGROPPMAN</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ngroppman.com/event.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ngroppman.com/Our%20Team.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>

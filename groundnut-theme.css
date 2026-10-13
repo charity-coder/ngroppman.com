@@ -1,0 +1,259 @@
+/* NGROPPMAN groundnut colour theme — bright, bold, readable, responsive
+   Kernel cream · golden shell · amber · skin red-brown · roasted brown · leaf green */
+:root {
+  --gn-kernel: #fffaf0;
+  --gn-cream:  #ffefc9;
+  --gn-gold:   #ffd98a;
+  --gn-amber:  #ffb347;
+  --gn-shell:  #f3d9a4;
+  --gn-skin:   #c8501e;
+  --gn-roast:  #3a1d08;
+  --gn-ink:    #2a1405;
+  --gn-leaf:   #1a6b3a;
+}
+
+html {
+  background: var(--gn-cream);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* ───────── BRIGHT GROUNDNUT BACKGROUND ───────── */
+body {
+  background-color: var(--gn-cream) !important;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%23c8501e' fill-opacity='.08'%3E%3Cellipse cx='30' cy='28' rx='15' ry='9' transform='rotate(-30 30 28)'/%3E%3Cellipse cx='44' cy='20' rx='12' ry='8' transform='rotate(-30 44 20)'/%3E%3Cellipse cx='90' cy='86' rx='15' ry='9' transform='rotate(25 90 86)'/%3E%3Cellipse cx='76' cy='95' rx='12' ry='8' transform='rotate(25 76 95)'/%3E%3C/g%3E%3Cg fill='%23ffb347' fill-opacity='.22'%3E%3Ccircle cx='96' cy='22' r='3'/%3E%3Ccircle cx='20' cy='92' r='3'/%3E%3Ccircle cx='60' cy='60' r='2'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(ellipse 70% 50% at 8% 0%,  rgba(255, 179, 71, .60), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 100% 30%, rgba(200, 80, 30, .22), transparent 70%),
+    radial-gradient(ellipse 70% 55% at 20% 100%, rgba(255, 217, 138, .95), transparent 70%),
+    linear-gradient(180deg, var(--gn-kernel) 0%, var(--gn-cream) 50%, var(--gn-gold) 100%) !important;
+  background-attachment: scroll, fixed, fixed, fixed, fixed !important;
+  color: var(--gn-ink);
+  font-weight: 600;
+  font-size: clamp(16px, .35vw + 15px, 18px) !important;
+  line-height: 1.7 !important;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
+}
+
+/* Light sections: bright, sunny groundnut tints */
+.stats-band   { background: linear-gradient(180deg, rgba(255, 250, 240, .92), rgba(255, 239, 201, .85)) !important; }
+.about-band   { background: linear-gradient(135deg, rgba(255, 217, 138, .80), rgba(255, 250, 240, .75)) !important; }
+.sdp-band     { background: linear-gradient(160deg, rgba(255, 250, 240, .90), rgba(255, 217, 138, .80)) !important; }
+.afla-band    { background: linear-gradient(135deg, rgba(255, 239, 201, .88), rgba(255, 179, 71, .55)) !important; }
+.cluster-band { background: linear-gradient(160deg, rgba(255, 217, 138, .80), rgba(255, 250, 240, .88)) !important; }
+.contact-band { background: linear-gradient(135deg, rgba(255, 250, 240, .90), rgba(255, 179, 71, .50)) !important; }
+#leadership   { background: linear-gradient(180deg, rgba(255, 250, 240, .92), rgba(255, 217, 138, .75)) !important; }
+
+/* Bright amber → leaf-green accent stripe at the top of each light section */
+.about-band, .sdp-band, .afla-band, .cluster-band, .contact-band, #leadership, .stats-band {
+  border-top: 5px solid transparent;
+  border-image: linear-gradient(90deg, #ffb347, #c8501e, #1a6b3a) 1;
+}
+
+/* Cards stay bright white and lifted so they pop on the gold */
+.leader-card, .vm-card, .obj-item, .cluster-level, .reg-box {
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(58, 29, 8, .18);
+}
+
+/* ───────── TEXT: BOLD, DARK ON LIGHT, BRIGHT ON DARK ───────── */
+h1, h2, h3, h4 { font-weight: 800; line-height: 1.2; }
+.section-title, .about-band h2, .cluster-band h2 { color: var(--gn-roast) !important; font-weight: 900 !important; }
+.section-label { color: var(--gn-skin) !important; font-weight: 800 !important; }
+
+/* Light sections: very dark roasted text for strong contrast */
+.about-band, .stats-band, .sdp-band, .afla-band, .cluster-band, .contact-band, #leadership {
+  color: var(--gn-ink);
+}
+.about-band p, .sdp-band p, .afla-band p, .cluster-band p, .contact-band p,
+#leadership p, .stats-band p {
+  color: var(--gn-ink);
+}
+
+/* Dark green sections: bright, bold white text */
+.hero, .mission-band, .ngrp-band, .timeline-band, .footer-partners, .ticker-wrap, footer {
+  color: #fff;
+}
+.hero p, .mission-band p, .ngrp-band p, .timeline-band p, .footer-partners p, footer p {
+  color: rgba(255, 255, 255, .97);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+}
+.ngrp-band .section-title, .mission-band h2, .mission-band h3, .timeline-band .section-title { color: #fff !important; }
+.ngrp-band .section-label, .mission-band .section-label, .timeline-band .section-label { color: #ffd770 !important; }
+
+/* Bold + justify all body text. Headings, labels, buttons, chips, nav stay as designed */
+:where(section, .section-inner, .about-text, .intro, article) p,
+.intro, .about-text p {
+  text-align: justify;
+  text-justify: inter-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  font-weight: 600;
+  line-height: 1.75;
+}
+:where(section) li:not(.tl-card li):not(nav li):not(footer li) {
+  text-align: justify;
+  text-justify: inter-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  font-weight: 600;
+}
+.tl-card ul li { font-weight: 700; color: #fff; }
+.leader-name { font-weight: 800; }
+.leader-role { font-weight: 700; }
+b, strong { font-weight: 800; }
+
+/* ───────── RESPONSIVE: iPhone, Android, tablet, laptop ───────── */
+img, video, svg, iframe, canvas { max-width: 100%; }
+img { height: auto; }
+table { display: block; max-width: 100%; overflow-x: auto; }
+a, button, .tab-btn, select, input, textarea { touch-action: manipulation; }
+button, .tab-btn, a.btn, [role="button"], select, input[type="submit"] { min-height: 44px; }
+input, select, textarea { font-size: 16px; } /* stops iPhone zooming into form fields */
+
+@supports (padding: max(0px)) {
+  body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  body { font-size: 16px !important; }
+  p, .intro { line-height: 1.7; }
+  .section-title { font-size: clamp(1.7rem, 7vw, 2.2rem) !important; }
+  .section, .about-band, .sdp-band, .afla-band, .cluster-band, .contact-band, .timeline-band {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  /* Narrow columns: tighter justify gaps */
+  :where(section, .section-inner, .about-text, article) p { word-spacing: -.05em; }
+}
+
+/* Tablets */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .section-inner, .about-inner, .cluster-inner, .ngrp-inner { padding-left: 24px; padding-right: 24px; }
+}
+
+/* Large laptops / desktops: keep line length comfortable */
+@media (min-width: 1400px) {
+  body { font-size: 18px !important; }
+}
+
+/* Other pages: headers */
+.header { border-bottom: 4px solid var(--gn-amber); }
+.header h1 { font-weight: 900; }
+.header p { font-weight: 600; opacity: 1; }
+
+@media (prefers-contrast: more) {
+  body { font-weight: 700; }
+}
+
+/* ───────── DARKER, BOLDER DARK TEXT ───────── */
+:root { --gn-ink: #0b0602; --gn-roast: #1c0e03; }
+.about-band, .stats-band, .sdp-band, .afla-band, .cluster-band, .contact-band, #leadership,
+.leader-card, .vm-card, .obj-item, .cluster-level, .reg-box {
+  color: #0b0602;
+}
+.about-band p, .stats-band p, .sdp-band p, .afla-band p, .cluster-band p, .contact-band p, #leadership p,
+.about-band li, .sdp-band li, .afla-band li, .cluster-band li, .contact-band li, #leadership li,
+.vm-card p, .obj-item p, .obj-item span, .cluster-level p, .reg-box label, .reg-box p {
+  color: #0b0602 !important;
+  font-weight: 700 !important;
+}
+.about-band h2, .about-band h3, .sdp-band h2, .sdp-band h3, .afla-band h2, .afla-band h3,
+.cluster-band h2, .cluster-band h3, .contact-band h2, #leadership h2, .section-title,
+.vm-card h3, .obj-item h3, .cluster-level h3, .leader-name {
+  color: #1c0e03 !important;
+  font-weight: 900 !important;
+}
+.leader-role { color: #8a2f08 !important; font-weight: 800 !important; }
+.section-label { color: #a63a0b !important; font-weight: 900 !important; }
+/* keep the white text on the green sections */
+.hero p, .mission-band p, .ngrp-band p, .timeline-band p, .footer-partners p, footer p { color: #fff !important; }
+
+/* ───────── VERY BOLD TEXT: Cluster System cards ───────── */
+.cluster-level .cl-title {
+  color: #0b0602 !important;
+  font-weight: 900 !important;
+  font-size: 1.05em;
+}
+.cluster-level .cl-items,
+.cluster-level .cl-items * {
+  color: #0b0602 !important;
+  font-weight: 900 !important;
+  font-size: 1em;
+  line-height: 1.6;
+  -webkit-text-stroke: .25px #0b0602; /* extra thickness on top of the font weight */
+}
+.cluster-band > * p, .cluster-structure + p { font-weight: 800 !important; color: #0b0602 !important; }
+
+/* ───────── VERY BOLD TEXT: Aflatoxin section ───────── */
+.afla-outcomes > div {
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  color: #0b0602 !important;
+  line-height: 1.5;
+  -webkit-text-stroke: .25px #0b0602;
+}
+.afla-outcomes > div span {
+  color: #0d7a35 !important;
+  font-weight: 900 !important;
+  font-size: 19px !important;
+  -webkit-text-stroke: 0;
+}
+.afla-band h3 { color: #1c0e03 !important; font-weight: 900 !important; }
+.afla-band .afla-act, .afla-band .afla-act * { font-weight: 800; }
+.afla-band .afla-stat-lbl { font-weight: 800 !important; }
+
+/* ───────── VERY BOLD TEXT: SDP goal cards ───────── */
+.sdp-card .sdp-goal   { color: #8a2f08 !important; font-weight: 900 !important; }
+.sdp-card .sdp-title  { color: #0b0602 !important; font-weight: 900 !important; font-size: 1.08em; }
+.sdp-card .sdp-target,
+.sdp-card .sdp-target strong {
+  color: #0b0602 !important;
+  font-weight: 900 !important;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-text-stroke: .25px #0b0602;
+}
+.sdp-card .sdp-target strong { color: #0d6a2e !important; display: block; margin-top: 8px; -webkit-text-stroke: .2px #0d6a2e; }
+.sdp-band > .sdp-inner p, .sdp-band p { font-weight: 800; }
+
+/* ───────── GOAL labels: bigger, heavier, darker ───────── */
+.sdp-goal, .sdp-card .sdp-goal {
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  letter-spacing: .14em;
+  color: #7a2606 !important;
+  -webkit-text-stroke: .5px #7a2606;
+  margin-bottom: 8px !important;
+}
+
+/* ───────── SDP cards: strongest weight for every line ───────── */
+.sdp-card, .sdp-card * { font-weight: 900 !important; }
+.sdp-card .sdp-title { font-size: 20px !important; color: #0b0602 !important; -webkit-text-stroke: .3px #0b0602; }
+.sdp-card .sdp-target { font-size: 16px !important; color: #1a0d03 !important; }
+
+/* ───────── Hero tagline & brand title: brighter, heavier ───────── */
+.hero-eyebrow {
+  color: #fff !important;
+  font-weight: 900 !important;
+  font-size: clamp(14px, 2.4vw, 20px) !important;
+  letter-spacing: .06em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, .45);
+  -webkit-text-stroke: .35px #fff;
+}
+.brand-title, .brand-title span { font-weight: 900 !important; }
+
+/* ───────── Navigation menus: heavier and brighter ───────── */
+.nav-secondary a, .nav-links a, nav a, .nav-mobile a, .top-links a {
+  font-weight: 900 !important;
+  letter-spacing: .02em;
+}
+.nav-secondary a {
+  color: #fff !important;
+  font-size: clamp(14px, 1.3vw, 16px) !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .45);
+  -webkit-text-stroke: .3px #fff;
+}
+.nav-secondary a:hover, .nav-secondary a:focus-visible { color: #ffd770 !important; -webkit-text-stroke-color: #ffd770; }
