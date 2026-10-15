@@ -1574,7 +1574,7 @@ document.getElementById('chatInput').addEventListener('input', function(){
 #homeFab:hover{background:#124d2b}
 </style>
 <script>
-  // Open the AI chat straight away when arriving from the home page (Chatbolt.html?chat=1)
+  // Open the AI chat straight away when arriving from the home page (Chatbolt.html)
   window.addEventListener('load',function(){
     if(/[?&]chat=1/.test(location.search) && typeof openChat==='function'){ openChat(); }
   });
